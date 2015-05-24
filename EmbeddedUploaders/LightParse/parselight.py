@@ -24,13 +24,13 @@ Light = LightReadings()
 
 # Попълваме необходимите колони на таблицата
 # | Date | Time | Value | ?
-Light.Date = '15.05.2015'
-Light.Time = '12:00:03'
-Light.Value = 100
+Light.date = '15.05.2015'
+Light.time = '12:00:03'
+Light.value = 100
 
 def saveToParse(Light):
     print("Saving...")
-    Test.save()
+    Light.save()
     print("Done!")
 
 # Извикваме функцията с обекта Light

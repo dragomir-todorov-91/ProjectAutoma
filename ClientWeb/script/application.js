@@ -74,29 +74,31 @@ $(document).ready(function()
 	Parse.initialize("WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL", "uRvdUCYFENssbGDeJYsQwAwyoBIIt9Smf4VobpXf");
     
 	// Getting data	
-	var username = $("#usernameFormField").val();
-	var email = $("#emailFormField").val();
+	var usernameForm = $("#usernameFormField").val();
+	var emailForm = $("#emailFormField").val();
 	var password = $("#passwordFormField").val();
 	var password2 = $("#password2FormField").val();
 	
 	// To be removed!
- 	console.log("Form information: " + username + "," + email + "," + password + "," + password2 + "!");
+ 	console.log("Form information: " + usernameForm + "," + emailForm + "," + password + "," + password2 + "!");
 	
 	// Creating parse object
     var userTest = Parse.Object.extend("Users");
     var user = new userTest();
 	
-	var s = username+password+"";
+	var s = usernameForm+password+"";
 	console.log(s);
 	// Genaration of userid, name, email, accessData, verified
 	var hashCode = function(s){
 				return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
 				}
-				
-	console.log(hashCode);
-	
-	
-	user.save({name: "hello", userid: 10}, 
+	var newUserID = Math.abs(hashCode(s));	
+	console.log(newUserID);
+		
+		
+	// Save without checking for duplicate entries (version 1)
+	/*
+	user.save({userid: (newUserID+""), name: usernameForm, email: emailForm, accessData: false, verified:false }, 
 	{
 	  success: function(object) 
 	  {
@@ -108,6 +110,55 @@ $(document).ready(function()
 		$(".error").show();
 	  }
 	});
+	*/
+	
+	// New version with check before duplicates
+	/*
+	
+	var GameScore = Parse.Object.extend("GameScore");
+
+	Parse.Cloud.beforeSave("GameScore", function(request, response) 
+	{
+		if (!request.object.isNew()) 
+		{
+		  // Let existing object updates go through
+		  response.success();
+		}
+		var query = new Parse.Query(GameScore);
+		// Add query filters to check for uniqueness
+		query.equalTo("playerName", request.object.get("playerName"));
+		query.first().then(function(existingObject) 
+		{
+		  if (existingObject) 
+		  {
+			// Update existing object
+			existingObject.set("score", request.object.get("score"));
+			return existingObject.save();
+		  } 
+		  else 
+		  {
+			// Pass a flag that this is not an existing object
+			return Parse.Promise.as(false);
+		  }
+		}).then(function(existingObject) 
+		  {
+			  if (existingObject) 
+			  {
+				// Existing object, stop initial save
+				response.error("Existing object");
+			  } 
+			  else 
+			  {
+				// New object, let the save go through
+				response.success();
+			  }
+		  }, function (error) {
+		  response.error("Error performing checks or saves.");
+		});
+	});
+	
+	*/
+	
 	
 	
   });

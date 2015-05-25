@@ -24,8 +24,6 @@
 				<input class='registerfield' id='emailFormField' pattern=".{6,}"   title="Мимимум 6 символа" type="email" placeholder='Email' required></input>
 				<input class='registerfield' id="passwordFormField" type="password" pattern="^\S{6,}$" onchange="if(this.checkValidity()) form.password2FormField.pattern = this.value;" placeholder="Парола" required>
 				<input class='registerfield' id="password2FormField" type="password" pattern="^\S{6,}$" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Моля въведете същата парола отново' : '');" placeholder="Потвърди паролата" required> </br>
-				
-				
 				<input class='button' type="submit" value="Регистрация">
 			</form>
 				<div class='button' id='registerButtonFacebook'>Регистрация с Facebook</div>

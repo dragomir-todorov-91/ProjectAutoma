@@ -5,9 +5,7 @@
     <link rel="stylesheet" href="base.css" />
     <script preload src="script/jquery-2.1.1.min.js" type="text/javascript"></script>
     <script preload src="script/jquery.color-2.1.2.min.js" type="text/javascript"></script>
-	
-	<script type="text/javascript" src="rsa/pidcrypt.js"></script>  
-	<script type="text/javascript" src="rsa/pidcrypt_util.js"></script>  
+  <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.4.2.min.js"></script>
 	
     <script preload src="script/application.js" type="text/javascript"></script>
     <title>Project Automa</title>
@@ -20,13 +18,17 @@
 	<div id="mainContent">
 		
 		<!-- Екран за регистрация -->
-		<div id="registerScreen" class="content registerForm">
-				<div class='registerfield'><input id='usernameFormField' type="text" placeholder='Потребителско име'></input></div>
-				<div class='registerfield'><input id='emailFormField' type="text" placeholder='Email'></input></div>
-				<div class='registerfield'><input id='passwordFormField' type="password" placeholder='Парола'></input></div>
-				<div class='registerfield'><input id='password2FormField' type="password" placeholder='Парола(Повтори)'></input></div>
-				<button id='registerButton'>Регистрация</button>
-				<button id='registerButtonFacebook'>Регистрация с Facebook</button>
+		<div id="registerScreen" class="content">
+			<form  class="registerForm">
+				<input class='registerfield' id='usernameFormField' pattern=".{6,}"   title="Мимимум 6 символа" type="text" placeholder='Потребителско име' required></input>
+				<input class='registerfield' id='emailFormField' pattern=".{6,}"   title="Мимимум 6 символа" type="email" placeholder='Email' required></input>
+				<input class='registerfield' id="passwordFormField" type="password" pattern="^\S{6,}$" onchange="if(this.checkValidity()) form.password2FormField.pattern = this.value;" placeholder="Парола" required>
+				<input class='registerfield' id="password2FormField" type="password" pattern="^\S{6,}$" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Моля въведете същата парола отново' : '');" placeholder="Потвърди паролата" required> </br>
+				
+				
+				<input class='button' type="submit" value="Регистрация">
+			</form>
+				<div class='button' id='registerButtonFacebook'>Регистрация с Facebook</div>
 		</div>	
 		
 		<!-- Екран за вход -->

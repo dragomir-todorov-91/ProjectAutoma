@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Приложение за периодичен запис на отчитания на светлината в cloud платформата parse.com
 import os, sys
 from utils import printTitle, printSubTitle, printExplain, printTab, printError

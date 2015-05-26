@@ -95,6 +95,13 @@ $(document).ready(function()
 	var newUserID = Math.abs(hashCode(s));	
 	console.log(newUserID);
 		
+	user.userid = newUserID + "";
+	user.name = usernameForm;
+	user.email = emailForm;
+	user.accessData = false;
+	user.verified = false;
+	user.save();
+	
 		
 	// Save without checking for duplicate entries (version 1)
 	/*
@@ -111,6 +118,60 @@ $(document).ready(function()
 	  }
 	});
 	*/
+	
+	
+	// New version with check before duplicates
+	
+	
+	// var GameScore = Parse.Object.extend("GameScore");
+	/*
+	Parse.Cloud.beforeSave("Users", function(request, response) 
+	{
+		if (!request.object.isNew()) 
+		{
+		  // Let existing object updates go through
+		  response.success();
+		}
+		
+		var query = new Parse.Query(user);
+		// Add query filters to check for uniqueness
+		query.equalTo(usernameForm, request.object.get("name"));
+		query.first().then(function(existingObject) 
+		{
+		  if (existingObject) 
+		  {
+			console.log("Existing user!");
+			// Update existing object
+			// existingObject.set("score", request.object.get("score"));
+			// return existingObject.save();
+		  } 
+		  else 
+		  {
+			// Pass a flag that this is not an existing object
+			return Parse.Promise.as(false);
+		  }
+		}).then(function(existingObject) 
+		  {
+			  if (existingObject) 
+			  {
+				// Existing object, stop initial save
+				response.error("Existing object");
+			  } 
+			  else 
+			  {
+				// New object, let the save go through
+				response.success();
+			  }
+		  }, function (error) {
+		  response.error("Error performing checks or saves.");
+		});
+	});
+	*/
+	
+	
+	
+	
+	
 	
 	// New version with check before duplicates
 	/*

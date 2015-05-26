@@ -94,13 +94,6 @@ $(document).ready(function()
 				}
 	var newUserID = Math.abs(hashCode(s));	
 	console.log(newUserID);
-		
-	user.userid = newUserID + "";
-	user.name = usernameForm;
-	user.email = emailForm;
-	user.accessData = false;
-	user.verified = false;
-	user.save();
 	
 		
 	// Save without checking for duplicate entries (version 1)
@@ -119,31 +112,36 @@ $(document).ready(function()
 	});
 	*/
 	
+	// user.set(param, value);
+	user.userid = newUserID + "";
+	user.name = usernameForm;
+	user.email = emailForm;
+	user.accessData = false;
+	user.verified = false;
+	user.save();
+	
 	
 	// New version with check before duplicates
 	
-	
-	// var GameScore = Parse.Object.extend("GameScore");
-	/*
-	Parse.Cloud.beforeSave("Users", function(request, response) 
+	var GameScore = Parse.Object.extend("GameScore");
+
+	Parse.Cloud.beforeSave("GameScore", function(request, response) 
 	{
 		if (!request.object.isNew()) 
 		{
 		  // Let existing object updates go through
 		  response.success();
 		}
-		
-		var query = new Parse.Query(user);
+		var query = new Parse.Query(GameScore);
 		// Add query filters to check for uniqueness
 		query.equalTo(usernameForm, request.object.get("name"));
 		query.first().then(function(existingObject) 
 		{
 		  if (existingObject) 
 		  {
-			console.log("Existing user!");
 			// Update existing object
-			// existingObject.set("score", request.object.get("score"));
-			// return existingObject.save();
+			//existingObject.set("score", request.object.get("score"));
+			//return existingObject.save();
 		  } 
 		  else 
 		  {
@@ -166,7 +164,6 @@ $(document).ready(function()
 		  response.error("Error performing checks or saves.");
 		});
 	});
-	*/
 	
 	
 	

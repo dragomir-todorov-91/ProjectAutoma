@@ -3,6 +3,7 @@ $(document).ready(function()
   // Глобални променливи
   var selectedItem = 0;
   var mainC = $('#mainContent'); 
+  Parse.initialize("WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL", "uRvdUCYFENssbGDeJYsQwAwyoBIIt9Smf4VobpXf");
   
   // GUI навигация
   $(".navigation-items").on("click",function()
@@ -70,9 +71,8 @@ $(document).ready(function()
   
   $(document).on("submit", ".registerForm", function()
   {
-		
-	Parse.initialize("WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL", "uRvdUCYFENssbGDeJYsQwAwyoBIIt9Smf4VobpXf");
-    
+    event.preventDefault(); // Забраняваме изпълнението на form.submit(), защото пречи на 
+	
 	// Getting data	
 	var usernameForm = $("#usernameFormField").val();
 	var emailForm = $("#emailFormField").val();
@@ -95,14 +95,41 @@ $(document).ready(function()
 	var newUserID = Math.abs(hashCode(s));	
 	console.log(newUserID);
 	
-		
-	// Save without checking for duplicate entries (version 1)
+	
+	
+	
+	// Setting data
+	user.set("userid", newUserID+"");
+	user.set("name", usernameForm);
+	user.set("email", emailForm);
+	user.set("accessData", true);
+	user.set("verified", false);
+	
+	
+	user.save(null, {
+	  success: function(user) {
+		// Execute any logic that should take place after the object is saved.
+		alert('New object created with objectId: ' + user.id);
+        location.reload(); //refreshes the form
+	  },
+	  error: function(user, error) {
+		// Execute any logic that should take place if the save fails.
+		// error is a Parse.Error with an error code and message.
+		alert('Failed to create new object, with error code: ' + error.message);
+        location.reload();
+	  }
+	});
+	
+	
+
 	/*
-	user.save({userid: (newUserID+""), name: usernameForm, email: emailForm, accessData: false, verified:false }, 
+	// Save without checking for duplicate entries (version 1)
+	user.save(null, 
 	{
 	  success: function(object) 
 	  {
 		$(".success").show();
+		alert("Success!");
 		  
 	  },
 	  error: function(model, error) 
@@ -112,67 +139,10 @@ $(document).ready(function()
 	});
 	*/
 	
-	// user.set(param, value);
-	user.userid = newUserID + "";
-	user.name = usernameForm;
-	user.email = emailForm;
-	user.accessData = false;
-	user.verified = false;
-	user.save();
-	
 	
 	// New version with check before duplicates
 	
-	var GameScore = Parse.Object.extend("GameScore");
-
-	Parse.Cloud.beforeSave("GameScore", function(request, response) 
-	{
-		if (!request.object.isNew()) 
-		{
-		  // Let existing object updates go through
-		  response.success();
-		}
-		var query = new Parse.Query(GameScore);
-		// Add query filters to check for uniqueness
-		query.equalTo(usernameForm, request.object.get("name"));
-		query.first().then(function(existingObject) 
-		{
-		  if (existingObject) 
-		  {
-			// Update existing object
-			//existingObject.set("score", request.object.get("score"));
-			//return existingObject.save();
-		  } 
-		  else 
-		  {
-			// Pass a flag that this is not an existing object
-			return Parse.Promise.as(false);
-		  }
-		}).then(function(existingObject) 
-		  {
-			  if (existingObject) 
-			  {
-				// Existing object, stop initial save
-				response.error("Existing object");
-			  } 
-			  else 
-			  {
-				// New object, let the save go through
-				response.success();
-			  }
-		  }, function (error) {
-		  response.error("Error performing checks or saves.");
-		});
-	});
-	
-	
-	
-	
-	
-	
-	// New version with check before duplicates
 	/*
-	
 	var GameScore = Parse.Object.extend("GameScore");
 
 	Parse.Cloud.beforeSave("GameScore", function(request, response) 

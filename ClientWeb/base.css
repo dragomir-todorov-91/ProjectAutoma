@@ -95,7 +95,7 @@ header
 	cursor: pointer;
 }
 
-#registerButtonFacebook
+.facebook
 {
 	background-color:#3b5998;
 }
@@ -116,7 +116,7 @@ header
 	background-color: #005500;
 }
 
-.registerfield
+.formfield
 {
 	width: 70%;
 	margin-bottom: 10px;

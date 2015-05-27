@@ -21,23 +21,31 @@
 		<!-- Екран за регистрация -->
 		<div id="registerScreen" class="content">
 			<form  class="registerForm">
-				<input class='registerfield' id='usernameFormField' pattern=".{6,}"   title="Мимимум 6 символа" type="text" placeholder='Потребителско име' required></input>
-				<input class='registerfield' id='emailFormField' pattern=".{6,}"   title="Мимимум 6 символа" type="email" placeholder='Email' required></input>
-				<input class='registerfield' id="passwordFormField" type="password" pattern="^\S{6,}$" onchange="if(this.checkValidity()) form.password2FormField.pattern = this.value;" placeholder="Парола" required>
-				<input class='registerfield' id="password2FormField" type="password" pattern="^\S{6,}$" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Моля въведете същата парола отново' : '');" placeholder="Потвърди паролата" required> </br>
+				<input class='formfield' id='usernameFormField' pattern=".{6,}"   title="Мимимум 6 символа" type="text" placeholder='Потребителско име' required></input>
+				<input class='formfield' id='emailFormField' pattern=".{6,}"   title="Мимимум 6 символа" type="email" placeholder='Email' required></input>
+				<input class='formfield' id="passwordFormField" type="password" pattern="^\S{6,}$" onchange="if(this.checkValidity()) form.password2FormField.pattern = this.value;" placeholder="Парола" required>
+				<input class='formfield' id="password2FormField" type="password" pattern="^\S{6,}$" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Моля въведете същата парола отново' : '');" placeholder="Потвърди паролата" required> </br>
 				<input class='button' type="submit" value="Регистрация">
 			</form>
-				<div class='button' id='registerButtonFacebook'>Регистрация с Facebook</div>
+				<div class='button facebook' id='registerButtonFacebook'>Регистрация с Facebook</div>
 		</div>	
 		
 		<!-- Екран за вход -->
 		<div id="loginScreen" class="hidden content">
-			<div> Вход </div>
+			<form  class="loginForm">
+				<input class='formfield' id='loginUsername' pattern=".{6,}"   title="Мимимум 6 символа" type="text" placeholder='Потребителско име' required></input>
+				<input class='formfield' id="loginPassword" type="password" pattern="^\S{6,}$" placeholder="Парола" required></br>
+				<input class='button' type="submit" value="Вход">
+			</form>
+				<div class='button facebook' id='loginButtonFacebook'>Вход с Facebook</div>
 		</div>	
 
 		<!-- Екран за профила на потребителя с дадените му права -->
 		<div id="homeScreen" class="hidden content">
 			<div> Профил </div>
+			<div id="profileName">Sample Name</div>
+			<div id="profileName">Sample</div>
+			<div id="profileName"></div>
 		</div>		
 
 		<!--Контейнер за свързване към услугата, получава списък от хранилища -->

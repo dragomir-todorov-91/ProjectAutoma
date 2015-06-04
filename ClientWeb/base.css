@@ -55,6 +55,9 @@ header
 .hidden
 {
 	display:none;
+	position: absolute !important;
+   top: -9999px !important;
+   left: -9999px !important;
 }
 
 /* Следните стилове управляват главното съдържание и всички прилежащи на него елементи*/

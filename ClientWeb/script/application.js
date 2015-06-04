@@ -29,6 +29,17 @@ $(document).ready(function()
   }(document, 'script', 'facebook-jssdk'));
   
   
+   userProfileText = sessionStorage.getItem("profile");
+   // Автоматичен логин
+   if(userProfileText != null)
+   {
+     userProfile = JSON.parse(userProfileText);
+     // Имаме логнат потребител
+      alert("Loging in");
+      loginUser(userProfile.userid);
+   }
+  
+  
   // GUI навигация
   $(".navigation-items").on("click",function()
   {
@@ -43,49 +54,49 @@ $(document).ready(function()
 			selectedItem = tinav;
 			switch(selectedItem)
 			{
-				case 0: {$(this).addClass('selected-item'); registerScreen(); break; }
-				case 1: {$(this).addClass('selected-item'); loginScreen(); break; }
-				case 2: {$(this).addClass('selected-item'); homeScreen(); break; }
-				case 3: {$(this).addClass('selected-item'); tempScreen(); break; }
-				case 4: {$(this).addClass('selected-item'); lightScreen(); break; }
-				case 5: {$(this).addClass('selected-item'); deviceScreen(); break; }
+				case 0: {$(this).addClass('selected-item'); showRegisterScreen(); break; }
+				case 1: {$(this).addClass('selected-item'); showLoginScreen(); break; }
+				case 2: {$(this).addClass('selected-item'); showHomeScreen(); break; }
+				case 3: {$(this).addClass('selected-item'); showTempScreen(); break; }
+				case 4: {$(this).addClass('selected-item'); showLightScreen(); break; }
+				case 5: {$(this).addClass('selected-item'); showDeviceScreen(); break; }
 			}
 		}
 	}
   });
 
   // Функции да покажат съответните екрани: #registerScreen, #loginScreen, #homeScreen, #tempScreen, #lightScreen, #deviceScreen
-  function registerScreen()
+  function showRegisterScreen()
   {
 		mainC.find('.content').addClass('hidden');
 		mainC.find('#registerScreen').removeClass('hidden');
   }
   
-  function loginScreen()
+  function showLoginScreen()
   {
 		mainC.find('.content').addClass('hidden');
 		mainC.find('#loginScreen').removeClass('hidden');
   }
   
-  function homeScreen()
+  function showHomeScreen()
   {
 		mainC.find('.content').addClass('hidden');
 		mainC.find('#homeScreen').removeClass('hidden');
   }
 
-  function tempScreen()
+  function showTempScreen()
   {
 		mainC.find('.content').addClass('hidden');
 		mainC.find('#tempScreen').removeClass('hidden');
   }
   
-  function lightScreen()
+  function showLightScreen()
   {
 		mainC.find('.content').addClass('hidden');
 		mainC.find('#lightScreen').removeClass('hidden');
   }
   
-  function deviceScreen()
+  function showDeviceScreen()
   {
 		mainC.find('.content').addClass('hidden');
 		mainC.find('#deviceScreen').removeClass('hidden');
@@ -97,51 +108,50 @@ $(document).ready(function()
   {
     event.preventDefault(); // Забраняваме изпълнението на form.submit(), защото пречи на 
 	
-	// Getting data	
-	var usernameForm = $("#usernameFormField").val();
-	var emailForm = $("#emailFormField").val();
-	var password = $("#passwordFormField").val();
-	var password2 = $("#password2FormField").val();
-	
-	// To be removed!
- 	console.log("Form information: " + usernameForm + "," + emailForm + "," + password + "," + password2 + "!");
-		
-	var s = usernameForm+password+"";
-	console.log(s);
-	// Genaration of userid, name, email, accessData, verified
-	var hashCode = function(s){
-				return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
-				}
-	var newUserID = Math.abs(hashCode(s));	
-	console.log(newUserID);
-	
-
-	// Creating parse object
+	  // Вземат се данните от формата	
+  	var usernameForm = $("#usernameFormField").val();
+  	var emailForm = $("#emailFormField").val();
+  	var password = $("#passwordFormField").val();
+  	
+  	// To be removed!
+   	console.log("Form information: " + usernameForm + "," + emailForm + "," + password + "!");
+  		
+  	var s = usernameForm+password+"";
+  	console.log(s);
+  	// Genaration of userid, name, email, accessData, verified
+  	var hashCode = function(s)
+    {
+  		return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+  	}
+  	var newUserID = Math.abs(hashCode(s));	
+  	console.log(newUserID);
+  
+  	// Creating parse object
     var userTest = Parse.Object.extend("Users");
     var user = new userTest();
-	
-	// Setting data
-	user.set("userid", newUserID+"");
-	user.set("name", usernameForm);
-	user.set("email", emailForm);
-	user.set("accessData", true);
-	user.set("verified", false);
-	
-	
-	user.save(null, {
-	  success: function(user) {
-		// Execute any logic that should take place after the object is saved.
-		alert('New object created with objectId: ' + user.id);
-        location.reload(); //refreshes the form
-	  },
-	  error: function(user, error) {
-		// Execute any logic that should take place if the save fails.
-		// error is a Parse.Error with an error code and message.
-		alert('Failed to create new object, with error code: ' + error.message);
-        location.reload();
-	  }
-	});
-	
+  	
+  	// Setting data
+  	user.set("userid", newUserID+"");
+  	user.set("name", usernameForm);
+  	user.set("email", emailForm);
+  	user.set("accessData", true);
+  	user.set("verified", false);
+  	
+  	user.save(null, 
+    {
+  	  success: function(user) 
+      {
+    		// Execute any logic that should take place after the object is saved.
+    		alert('New object created with objectId: ' + user.id);
+  	  },
+  	  error: function(user, error) 
+      {
+    		// Execute any logic that should take place if the save fails.
+    		// error is a Parse.Error with an error code and message.
+    		alert('Failed to create new object, with error code: ' + error.message);
+  	  }
+  	});
+  	
   });
 
   
@@ -266,7 +276,7 @@ $(document).ready(function()
 
 
 
-  // Login
+  // Вход на потребителя
   $(document).on("submit", ".loginForm", function()
   {
     event.preventDefault(); // Забраняваме изпълнението на form.submit(), защото пречи на 
@@ -283,29 +293,84 @@ $(document).ready(function()
   	var loginUserID = Math.abs(hashCode(s)) + "";	
   	console.log(loginUserID);
   	
-  	var user = Parse.Object.extend("Users");
-      var query = new Parse.Query(user);
+  	loginUser(loginUserID);
+  });
+  
+  // Допълнителна функция за автоматично вписване на потребителя
+  function loginUser(loginUserID)
+  {
+    var user = Parse.Object.extend("Users");
+    var query = new Parse.Query(user);
   	query.equalTo("userid",loginUserID);
       query.find({
           success: function(results) 
           {
-              console.log(results[0].get("userid")); // TODO remove
-              
-              // getting user profile and saving it to a local variable
-              userProfile = results[0];
-              
-              showProfile();
+              if(results.length > 0)
+              {
+                console.log(results[0].get("userid")); // TODO remove
+                
+                // Запаметяваме потребителя в localStorage, за по-лесно вписване на единичен компютър
+                sessionStorage.setItem("profile", JSON.stringify(results[0]));
+
+                // Запаметяваме потребителя в локална променлива
+                userProfile = results[0];
+                clearForm();
+                showProfile();
+              }
+              else
+              {
+                alert("Грешно потребителско име или парола. Моля въведете ги отново.");
+              }
           }
-      });   
-  });
+      });  
+  }
 
   
   function showProfile()
   {
+    // Показва профила, скрива разделите за регистрация и вход
+    var $header = $('#header');
+    $header.find('.logged').removeClass('hidden');
+    $header.find('.nonlogged').addClass('hidden');
+    $(".navigation-items:nth-child(3)").addClass("selected-item");
+    showHomeScreen();
+    
+    // Обновява информацията на профилния екран
      $("#profileName").text(userProfile.get("name"));
      $("#profileEmail").text(userProfile.get("email"));
-     $("#profileDataAccess").text(userProfile.get("accessData")?"true": "false");
-     $("#profileDeviceAccess").text(userProfile.get("verified")?"true": "false");
+     $("#profileDataAccess").text(userProfile.get("accessData")?"Потребителя има достъп до данните от устройството": "Потребителя няма достъп до данните от устройството");
+     $("#profileDeviceAccess").text(userProfile.get("verified")?"Потребителя може да настройва и управлява устройството": "Потребителя няма права да настройва и управлява устройството");
+  }
+  
+  // Изход на потребителя
+  $(document).on("click", "#logoutButton", function()
+  {
+    var result = confirm("Сигурен ли сте че изкате да се отпишете?");
+    if (result == true) 
+    {
+      // Премахваме запазения потребител
+      sessionStorage.removeItem("profile");
+      
+      // Показва профила, скрива разделите за регистрация и вход
+      var $header = $('#header');
+      $header.find('.logged').addClass('hidden');
+      $header.find('.nonlogged').removeClass('hidden');
+      $(".navigation-items:nth-child(1)").addClass("selected-item");
+      showRegisterScreen();
+      
+      // Обновява информацията на профилния екран
+       $("#profileName").text("username");
+       $("#profileEmail").text("email");
+       $("#profileDataAccess").text("data access");
+       $("#profileDeviceAccess").text("user verified");
+    } 
+  });
+  
+  
+  function clearForm()
+  {
+      $(':input').not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');
+      $(':checkbox, :radio').prop('checked', false);
   }
   
 

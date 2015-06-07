@@ -52,27 +52,10 @@ $query = new ParseQuery("Users");
 $object = $query->get($_POST['user']);
 $query->limit(2); // default 100, max 1000
 
-// All results:
-$results = $query->find();
-
 // Just the first result:
 $first = $query->first();
 
-$flag = 0;
-
-// Process ALL (without limit) results with "each".
-// Will throw if sort, skip, or limit is used.
-$query->each(function($obj) 
-{
-    if($obj->get("verified") == true)
-		$flag = 1;
-});
-
-if(count($query) != 1)
-	$flag = 0;
-
-		
-if($flag == 1)
+if($first->get("verified") == true)
 	$ret = file_put_contents('data.json',$data);
 else {
 	echo "No Permision To Execute Operation!";

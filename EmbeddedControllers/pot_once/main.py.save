@@ -1,0 +1,27 @@
+import json
+import time
+from pot_once import Sensor
+
+while True:
+	with open('ManualOverride/data.json') as data_file:    
+		data = json.load(data_file)
+	
+	if data['turnlight']=="1":
+		print "Light turned on"
+	if data['turnaircond']=="1":
+                print "Aircond turned on"
+	#call the sensor readings
+	sens = Sensor()
+	#light
+	lightLevel = sens.readLight()
+	#temp
+	temperature = sens.readTemperature()
+	#turn light on
+	print data['light']
+	print lightLevel
+	if data['light'] >= lightLevel:
+		print "Light is turned on!"
+	#turn air conditioning on
+	if data['temperature'] >= (temperature-temperature*5/100) || data['temperature'] >= (temperature-temperature*5/100):
+                print "Air conditioning is turned on!"
+	time.sleep(float(data["sleeptime"]))

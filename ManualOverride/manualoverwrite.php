@@ -7,10 +7,16 @@ $dbname = "tuts_rest";
 if($_SERVER['REQUEST_METHOD'] == "POST"){
  // Get data
   if(isset($_POST['user']) && isset($_POST['sleeptime']) && isset($_POST['turnaircond'])) {
+//	$data=json_encode($_POST);
+$jsonString = file_get_contents("data.json");
+$conf = json_decode($jsonString);
+$conf->user=$_POST['user'];
+$conf->sleeptime=$_POST['sleeptime'];
+$conf->turnaircond=$_POST['turnircond'];
+$data = $conf;
 
-	
-	$data=json_encode($_POST);
-     
+
+
 //print_r($data);
 // Create connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
@@ -18,6 +24,7 @@ $conn = mysqli_connect($servername, $username, $password, $dbname);
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
+
 $user=$_POST['user'];
 
 $sql = "SELECT verified FROM users WHERE userid=$user";

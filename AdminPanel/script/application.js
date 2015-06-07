@@ -78,12 +78,17 @@ $(document).ready(function()
                 console.log(results[0].get("userid")); // TODO remove
                 
                 // Проверка на email за съответсващ админски идентификатор
-                
-                
-                // Запаметяваме потребителя в локална променлива
-                userProfile = results[0];
-                clearForm();
-                showManageProfile();
+                if (results[0].id != 'Jm6jdCt22D')
+                {
+                  alert('Това не е валиден админски профил!');
+                }
+                else
+                {
+                  // Запаметяваме потребителя в локална променлива
+                  userProfile = results[0];
+                  clearForm();
+                  showManageProfile(); 
+                }
               }
               else
               {
@@ -136,7 +141,7 @@ $(document).ready(function()
      
      for(var i = 0; i < allUsers.length; i++)
      {
-       htmlManageTable += "<tr data-id='" + allUsers[i].get("userid") + "'>"
+       htmlManageTable += "<tr data-id='" + allUsers[i].id + "'>"
                          +  "<td>" + allUsers[i].get("name") + "</td>"
                          +  "<td>" + allUsers[i].get("email") + "</td>";
                          if(allUsers[i].get("accessData") == true)
@@ -172,7 +177,7 @@ user.id = updateUserID;
 user.set('accessData',newDataAccessValue);
 user.set('verified',newVerifiedValue);
 
-users.save(null, {
+user.save(null, {
   success: function(point) {
     // Saved successfully.
   },

@@ -61,7 +61,31 @@
 
 		<!--Контейнер за свързване към услугата, получава списък от хранилища -->
 		<div id="deviceScreen" class="hidden content">
-			<div> Управление на устройство </div>
+			<div> Управление на устройство (да се проверява дали потребителя има права да променя тези данни) </div>
+			<table class="manageTable">
+				<tr>
+					<td>Време на отчитане:</td>
+					<td><input id="manageSleeptime" type="number" value="300" min="60" max="3600"> секунди</td>
+				</tr>
+				<tr>
+					<td>Включи климатика (пренебрегва долната стойност):</td>
+					<td><input id="manageTurnAirCond" type="checkbox"></td>
+				</tr>
+				<tr>
+					<td>Температура, която да подържа климатика:</td>
+					<td><input id="manageTemperature" type="number" value="300" min="60" max="3600"> градуса</td>
+				</tr>
+				<tr>
+					<td>Включи осветлението (пренебрегва долната стойност):</td>
+					<td><input id="manageTurnLight" type="checkbox"></td>
+				</tr>
+				<tr>
+					<td>Температура, която да подържа климатика:</td>
+					<td><input id="manageLightLevel" type="number" value="300" min="60" max="3600"> лумени</td>
+				</tr>
+			</table>
+			<input class='button' type="submit" id="changeDeviceSettings" value="Промени">
+			
 		</div>				
 		
 	</div>

@@ -378,4 +378,35 @@ $(document).ready(function()
   }
   
 
+
+  // Екран за настройка на устройство
+  $(document).on('click', '#changeDeviceSettings', function()
+  {
+    
+    var manageSleeptime = $('#manageSleeptime').val();
+    var manageTurnAirCond = $('#manageTurnAirCond').is(":checked");
+    var manageTemperature = $('#manageTemperature').val();
+    var manageTurnLight = $('#manageTurnLight').is(":checked");
+    var manageLightLevel = $('#manageLightLevel').val();
+    
+    
+     $.ajax({
+    type: "POST",
+    dataType: "json",
+    url:  "192.168.0.105",
+    
+    data: { user: userProfile.id, 
+            sleeptime: manageSleeptime,
+            turnaircond: manageTurnAirCond,
+            turnlight: manageTurnLight,
+            lightlevel: manageLightLevel,
+            temperature: manageTemperature  }
+
+    });
+
+    
+    
+          
+  });
+
 });

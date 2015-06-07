@@ -344,6 +344,20 @@ $(document).ready(function()
      $("#profileEmail").text(userProfile.get("email"));
      $("#profileDataAccess").text(userProfile.get("accessData")?"Потребителя има достъп до данните от устройството": "Потребителя няма достъп до данните от устройството");
      $("#profileDeviceAccess").text(userProfile.get("verified")?"Потребителя може да настройва и управлява устройството": "Потребителя няма права да настройва и управлява устройството");
+  
+  /*
+     //Ако няма права показваме съобщение за неналични права, в противен случай показваме екран за редакция
+     if(userProfile.get("verified"))
+     {
+       $("#manageContainer").removeClass('hidden');
+       $("#manageError").addClass('hidden');
+     }
+     else
+     {
+       $("#manageContainer").addClass('hidden');
+       $("#manageError").removeClass('hidden');
+     }
+*/     
   }
   
   // Изход на потребителя
@@ -390,10 +404,10 @@ $(document).ready(function()
     var manageLightLevel = $('#manageLightLevel').val();
     
     
-     $.ajax({
+    $.ajax({
     type: "POST",
     dataType: "json",
-    url:  "192.168.0.105",
+    url:  "http://192.168.0.105/automa/EmbeddedControllers/pot_once/ManualOverride/manualoverwrite.php",
     
     data: { user: userProfile.id, 
             sleeptime: manageSleeptime,

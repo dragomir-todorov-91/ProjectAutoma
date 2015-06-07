@@ -1,9 +1,27 @@
 <?php
-// Include confi.php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "tuts_rest";
+require 'parse_sdk/autoload.php';
+
+use Parse\ParseObject;
+use Parse\ParseQuery;
+use Parse\ParseACL;
+use Parse\ParsePush;
+use Parse\ParseUser;
+use Parse\ParseInstallation;
+use Parse\ParseException;
+use Parse\ParseAnalytics;
+use Parse\ParseFile;
+use Parse\ParseCloud;
+use Parse\ParseClient;
+
+$verified = false;
+
+$app_id = "WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL";
+$rest_key = "Vq6yZVkcHJUbiCNADmMgwN5ldsvTjvS23cGTQwG7";
+$master_key = "tzRN8jcc6x9zO59h1zbO2TgVLH8A4GeAVd1o0lgz";
+
+ParseClient::initialize( $app_id, $rest_key, $master_key );
+
+
 if($_SERVER['REQUEST_METHOD'] == "POST"){
  // Get data
  if(isset($_POST['user'])) {
@@ -24,35 +42,39 @@ if(isset($_POST['temperature'])){
 if(isset($_POST['lightlevel'])){
 	$conf->lightlevel=$_POST['lightlevel'];}
 	
-
-
 	
 $data = json_encode($conf);
-//print_r($data);
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+
+
+
+$query = new ParseQuery("Users");
+// Get a specific object:
+$object = $query->get($_POST['user']);
+$query->limit(2); // default 100, max 1000
+
+// All results:
+$results = $query->find();
+
+// Just the first result:
+$first = $query->first();
+
+$flag = 0;
+
+// Process ALL (without limit) results with "each".
+// Will throw if sort, skip, or limit is used.
+$query->each(function($obj) 
+{
+    if($obj->get("verified") == true)
+		$flag = 1;
+});
+
+if(count($query) != 1)
+	$flag = 0;
+
+		
+if($flag == 1)
+	$ret = file_put_contents('data.json',$data);
+else {
+	echo "No Permision To Execute Operation!";
 }
-$user=$_POST['user'];
-$sql = "SELECT verified FROM users WHERE userid=$user";
-$result = mysqli_query($conn, $sql);
-if (mysqli_num_rows($result) > 0) {
-    // output data of each row
-    while($row = mysqli_fetch_assoc($result)) {
-        echo "id: " . $row["verified"]. "<br>" ;
-		if($row["verified"]==1)
-			$ret = file_put_contents('data.json',$data);
-		else {
-			echo "No Permision To Execute Operation!";
-		}
-    }
-} else {
-    echo "No Permision To Execute Operation!";
-}
-mysqli_close($conn);
- 
-}
- 
- }
+

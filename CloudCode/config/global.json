@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "_default": {
+            "link": "Automa"
+        }, 
+        "Automa": {
+            "applicationId": "WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL", 
+            "masterKey": "tzRN8jcc6x9zO59h1zbO2TgVLH8A4GeAVd1o0lgz"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.18"
+    }
+}

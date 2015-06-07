@@ -1,0 +1,184 @@
+html,body
+{
+    margin:0; 
+    background-color: #eee;
+}
+
+div.navigation-items
+{
+	font-size: 20px;
+	color: white;
+	
+    position: relative;
+    margin:15px auto 0;
+    left:16px;
+	display:inline-block;
+    cursor: pointer;
+}
+
+div.selected-item
+{
+	color:black;
+	margin-left: 50px;
+	margin-right: 50px;
+	border: 1px solid;
+	border-color: white;
+	border-radius: 5px;
+	padding: 5px;
+	background-color:white;
+}
+
+header
+{
+	
+    background-color: white;
+    margin: 0 auto;
+    z-index:100;
+    text-align: center;
+
+
+    position: fixed;
+	box-shadow: 0px 5px 3px #888;
+    height:64px;
+	
+    margin-left: auto;
+    margin-right: auto;
+	
+    width:100%;
+    top: 0px;
+    left:0px;
+    transition: height 0.5s; /* transition - по-гладко появяване на менюто - анимация съответстваща на дизайна */
+}
+
+
+/*За отделните страници и главното съдържание*/
+.hidden
+{
+	display:none;
+	position: absolute !important;
+   top: -9999px !important;
+   left: -9999px !important;
+}
+
+/* Следните стилове управляват главното съдържание и всички прилежащи на него елементи*/
+.content
+{
+	font-family: 'Roboto-Medium';
+	font-size: 16px;
+	color: #333;
+	
+	word-wrap: break-word; /* Ако някое съдържание стане твърде голямо, да се покаже на няколко реда, макар и да развали layout-а! Екстремен случай*/
+	
+    position: absolute;
+	text-align:center;
+	margin-top: 20px;
+	width: 100%;
+	
+    top: 66px;
+    background-color: #eee;
+    opacity: 1;
+	
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+
+.button
+{
+	margin: 15px;
+	text-align: center;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #005500;
+	line-height: 3;
+	border-radius: 50px;
+	color: #fff;
+	width: 200px;
+	height: 48px;
+	cursor: pointer;
+}
+
+.facebook
+{
+	background-color:#3b5998;
+}
+
+.button:active,#registerButtonFacebook:active
+{
+	background-color:#667278;
+}
+
+.mainHeaderBack
+{ 
+    transition: all 0.4s ease;
+	background-color:#b0bec5;
+}
+
+.secondaryHeaderBack
+{
+	background-color: #005500;
+}
+
+.formfield
+{
+	width: 70%;
+	margin-bottom: 10px;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+input[type=text],[type=password],[type=email]
+{
+    padding:7px;
+    width:70%;
+    height:40px;
+    margin-top:15px;
+    font-size:18px
+}
+
+
+input[type=button]:hover
+{
+	background-color:#667278;
+}
+
+
+
+/* Същински профил */
+/*****************************************************************************/
+.profile
+{
+	padding: 0;
+	width: 90%;
+}
+
+#UserProfileView
+{
+	background-image: url('../res/images/profileWoman.png');
+	background-size:cover;
+}
+
+#profile-information
+{
+	text-align:center;
+}
+
+.profileItems
+{
+	top: 30px;
+    position: relative;
+    margin:15px auto 0;
+	
+	line-height: 40px;
+	width: 60%;
+	height: 40px;
+	
+	background-color: rgba(38, 50, 56 , 0.5);
+	border-radius: 4px;
+	
+	font-size: 16px;
+	color: #fff;
+}
+/*****************************************************************************/

@@ -131,22 +131,61 @@ $(document).ready(function()
   function showAllUsersOnManage()
   {
      //TODO add UI elements on manage screen and tie them to an html-data element with user id
-     var htmlManageTable = "<table>";
+     var htmlManageTable = "<table class='manageTable'>";
+     htmlManageTable += "<tr><td>Име</td><td>Email</td><td>Достъп до данните</td><td>Права за контрол</td><td>Промени</td></tr>"
      
      for(var i = 0; i < allUsers.length; i++)
      {
-       htmlManageTable += "<tr data-id=" + allUsers[i].get("userid") + "><td>" + allUsers[i].get("name") + "</td>"
-                       +  "<td>" + allUsers.get("email") + "</td>"
-                       +  "<td>" + allUsers.get("email") + "</td>"
-                       +  "<td>" + allUsers.get("email") + "</td>"
+       htmlManageTable += "<tr data-id='" + allUsers[i].get("userid") + "'>"
+                         +  "<td>" + allUsers[i].get("name") + "</td>"
+                         +  "<td>" + allUsers[i].get("email") + "</td>";
+                         if(allUsers[i].get("accessData") == true)
+                            htmlManageTable += "<td><input type='checkbox' name='accessData' value='accessData' checked='checked'>Data Access</td>";
+                          else
+                            htmlManageTable += "<td><input type='checkbox' name='accessData' value='accessData'>Data Access</td>";
+                          if(allUsers[i].get("verified") == true)
+                            htmlManageTable += "<td><input type='checkbox' name='verified' value='verified' checked='checked'>Control Access</td>";
+                          else
+                            htmlManageTable += "<td><input type='checkbox' name='verified' value='verified'>Control Access</td>";
                        +  "</tr>";
-       
+                       htmlManageTable += "<td><input type='button' class='submitUpdatedUsers' value='Промени правата'></td>";
      }
      
      htmlManageTable += "</table>";
      $("#manageTable").append(htmlManageTable);
   }
   
+  $(document).on("click", ".submitUpdatedUsers", function()
+  {
+    // Извлича ID на потребителя
+    var updateUserID = $(this).closest('tr').data('id');
+    var newDataAccessValue = $(this).parent().prev('td').prev('td').find('input').is(":checked");
+    var newVerifiedValue = $(this).parent().prev('td').find('input').is(":checked");
+    
+    // Изпраща заявка на сървъра за запис
+    
+    
+    // Create a pointer to an object of class Point with id dlkj83d
+var Users = Parse.Object.extend("Users");
+var user = new Users();
+user.id = updateUserID;
+user.set('accessData',newDataAccessValue);
+user.set('verified',newVerifiedValue);
+
+users.save(null, {
+  success: function(point) {
+    // Saved successfully.
+  },
+  error: function(point, error) {
+    // The save failed.
+    // error is a Parse.Error with an error code and description.
+  }
+});
+    
+    
+    
+  });
+    
   function clearForm()
   {
       $(':input').not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');

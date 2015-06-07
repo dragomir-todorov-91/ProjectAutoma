@@ -98,9 +98,17 @@ header
 	cursor: pointer;
 }
 
-.facebook
+.manageTable
 {
-	background-color:#3b5998;
+	margin-top: 25px;
+	margin-bottom: 50px;	
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+}
+
+td{
+	border: 1px solid #000	;
 }
 
 .button:active,#registerButtonFacebook:active

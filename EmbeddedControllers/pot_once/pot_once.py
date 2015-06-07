@@ -5,43 +5,44 @@ import time
 import os #
 from test import Output
 
-def writeSensor(fileH):
-	x = str(mcp.readAnalog(0,0))	# <2>
-	ts = str(time.time())
-	print(x+","+ts, file=fileH)
-	print (x+","+ts)
+class Sensor:
 
-def writeTemperature(fileH):
-        x = str(mcp.readAnalog(0,0))    # <2>
-        ts = str(time.time())
-        print(x+","+ts, file=fileH)
-        print (x+","+ts)
+	def writeSensor(self,fileH):
+		x = str(mcp.readAnalog(0,0))	# <2>
+		ts = str(time.time())
+		print(x+","+ts, file=fileH)
+		print (x+","+ts)
+		return x
 
+	def writeTemperature(self,fileH):
+        	x = str(mcp.readAnalog(0,0))    # <2>
+	        ts = str(time.time())
+        	print(x+","+ts, file=fileH)
+	        print (x+","+ts)
+		return x
 
+	def readLight(self):
+		f = open('lightMeasurements.csv','a')
+		pinH = Output()
+		#open pin 4
+		pinH.open(4,"out")
+		#wait for pin to go high
+		time.sleep(1)
+		#measure light
+		value = self.writeSensor(f)
+		pinH.close(4)
+		#sleep for a second to avoid high voltage on pin 4
+		time.sleep(1)
+		return value
 
-f = open('lightMeasurements.csv','a')
-
-pinH = Output()
-
-#open pin 4
-
-while True:
-	pinH.open(4,"out")
-	#wait for pin to go high
-	time.sleep(1)
-	#measure light
-	writeSensor(f)
-	print("test")		
-	pinH.close(4)
-	#sleep for a second to avoid high voltage on pin 4
-	time.sleep(3)
-	pinH.open(17,"out")
-	#wait for pin to go high
-        time.sleep(1)
-        #measure temperature
-	writeTemperature(f)
-        print("test")
-        pinH.close(17)
-	#wait for the amaount of time set in configuration
-        time.sleep(3)
-
+	def readTemperature(self):
+		f = open('temperatureMeasurements.csv','a')
+                pinH = Output()
+		pinH.open(17,"out")
+		#wait for pin to go high
+	        time.sleep(1)
+	        #measure temperature
+		value = self.writeTemperature(f)
+	        print("test")
+	        pinH.close(17)
+		return value

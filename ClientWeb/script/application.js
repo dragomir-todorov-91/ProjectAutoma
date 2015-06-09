@@ -345,7 +345,7 @@ $(document).ready(function()
      $("#profileDataAccess").text(userProfile.get("accessData")?"Потребителя има достъп до данните от устройството": "Потребителя няма достъп до данните от устройството");
      $("#profileDeviceAccess").text(userProfile.get("verified")?"Потребителя може да настройва и управлява устройството": "Потребителя няма права да настройва и управлява устройството");
   
-  /*
+  
      //Ако няма права показваме съобщение за неналични права, в противен случай показваме екран за редакция
      if(userProfile.get("verified"))
      {
@@ -357,7 +357,7 @@ $(document).ready(function()
        $("#manageContainer").addClass('hidden');
        $("#manageError").removeClass('hidden');
      }
-*/     
+    
   }
   
   // Изход на потребителя

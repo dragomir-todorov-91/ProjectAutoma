@@ -1,25 +1,48 @@
 <?php
-require 'parse_sdk/autoload.php';
 
-use Parse\ParseObject;
-use Parse\ParseQuery;
-use Parse\ParseACL;
-use Parse\ParsePush;
-use Parse\ParseUser;
-use Parse\ParseInstallation;
-use Parse\ParseException;
-use Parse\ParseAnalytics;
-use Parse\ParseFile;
-use Parse\ParseCloud;
-use Parse\ParseClient;
+$ch = curl_init('https://api.parse.com/1/classes/Users/69V5ppe1OY');
 
-$verified = false;
+curl_setopt($ch,CURLOPT_HTTPHEADER,array(
+	'X-Parse-Application-Id: WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL',
+    'X-Parse-REST-API-Key: Vq6yZVkcHJUbiCNADmMgwN5ldsvTjvS23cGTQwG7',
+    'Content-Type: application/json'));
+	
 
-$app_id = "WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL";
-$rest_key = "Vq6yZVkcHJUbiCNADmMgwN5ldsvTjvS23cGTQwG7";
-$master_key = "tzRN8jcc6x9zO59h1zbO2TgVLH8A4GeAVd1o0lgz";
+	
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-ParseClient::initialize( $app_id, $rest_key, $master_key );
+$output = curl_exec($ch);
+
+echo curl_errno($ch) . '<br/>';
+echo curl_error($ch) . '<br/>';
+
+curl_close($ch);
+
+$object = json_decode($output);
+var_dump($object->verified);
+var_dump($output);
+
+/*
+$ch = curl_init();
+
+curl_setopt($ch, CURLOPT_URL, "https://api.parse.com/1/classes/Users/69V5ppe1OY");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+
+	
+$headers = array(
+    "Content-Type: application/json", 
+    "X-Parse-Application-Id: WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL",
+    "X-Parse-REST-API-Key: Vq6yZVkcHJUbiCNADmMgwN5ldsvTjvS23cGTQwG7"
+);
+
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+
+$output = curl_exec($ch); 
+
+curl_close($ch);  
+  
+var_dump($output);
 
 
 if($_SERVER['REQUEST_METHOD'] == "POST")
@@ -64,3 +87,4 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
 		}
 	}
 }
+*/

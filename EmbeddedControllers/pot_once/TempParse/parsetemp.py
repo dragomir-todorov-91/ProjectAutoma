@@ -10,6 +10,7 @@ from pprint import pprint
 from utils import printTitle, printSubTitle, printExplain, printTab, printError
 import urllib.request,urllib.error
 import sys
+import urllib2
 
 #This is the parse.com application and api keys
 APPLICATION_ID = "WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL"
@@ -35,9 +36,9 @@ def saveToParse(temperature):
 # Дефинираме функция за проверка на интернет достъп
 def internet_on():
     try:
-        response=urllib.request.urlopen('http://www.google.com',timeout=1)
+        response=urllib2.urlopen('http://www.google.com',timeout=1)
         return True
-    except urllib.error.URLError as err: pass
+    except urllib2.URLError as err: pass
     return False
     
 # Четем файла и обхождаме данните за качване

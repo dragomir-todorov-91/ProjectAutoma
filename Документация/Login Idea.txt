@@ -1,0 +1,5 @@
+userID (facebook id when loged in with facebook)
+name
+email(this is used to dettect if the user is banned)
+accessData(0 default can access, 1 - banned user)
+verified(he can then control the settings on the device)

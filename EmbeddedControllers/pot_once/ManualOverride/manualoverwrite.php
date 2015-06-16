@@ -1,27 +1,4 @@
 <?php
-require 'parse_sdk/autoload.php';
-
-use Parse\ParseObject;
-use Parse\ParseQuery;
-use Parse\ParseACL;
-use Parse\ParsePush;
-use Parse\ParseUser;
-use Parse\ParseInstallation;
-use Parse\ParseException;
-use Parse\ParseAnalytics;
-use Parse\ParseFile;
-use Parse\ParseCloud;
-use Parse\ParseClient;
-
-$verified = false;
-
-$app_id = "WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL";
-$rest_key = "Vq6yZVkcHJUbiCNADmMgwN5ldsvTjvS23cGTQwG7";
-$master_key = "tzRN8jcc6x9zO59h1zbO2TgVLH8A4GeAVd1o0lgz";
-
-ParseClient::initialize( $app_id, $rest_key, $master_key );
-
-
 if($_SERVER['REQUEST_METHOD'] == "POST")
 {
 	// Get data
@@ -33,6 +10,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
 		$conf = json_decode($jsonString);
 
 
+		if(isset($_POST['user'])){	
+			$conf->userid=$_POST['user'];}
 		if(isset($_POST['sleeptime'])){	
 			$conf->sleeptime=$_POST['sleeptime'];}
 		if(isset($_POST['turnaircond'])){
@@ -47,17 +26,31 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
 		
 		$data = json_encode($conf);
 
+		
 
+		$ch = curl_init('https://api.parse.com/1/classes/Users/'.($conf->userid));
 
-		$query = new ParseQuery("Users");
-		// Get a specific object:
-		$object = $query->get($_POST['user']);
-		$query->limit(2); // default 100, max 1000
+		curl_setopt($ch,CURLOPT_HTTPHEADER,array(
+			'X-Parse-Application-Id: WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL',
+			'X-Parse-REST-API-Key: Vq6yZVkcHJUbiCNADmMgwN5ldsvTjvS23cGTQwG7',
+			'Content-Type: application/json'));
+			
 
-		// Just the first result:
-		$first = $query->first();
+			
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-		if($first->get("verified") == true)
+		$output = curl_exec($ch);
+
+		echo curl_errno($ch) . '<br/>';
+		echo curl_error($ch) . '<br/>';
+
+		curl_close($ch);
+
+		$object = json_decode($output);
+		
+		
+
+		if($object->verified == true)
 			$ret = file_put_contents('data.json',$data);
 		else {
 			echo "No Permision To Execute Operation!";

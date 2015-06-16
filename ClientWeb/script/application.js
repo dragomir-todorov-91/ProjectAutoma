@@ -4,6 +4,10 @@ $(document).ready(function()
   var selectedItem = 0;
   var mainC = $('#mainContent'); 
   var userProfile;
+  var raspberryIP='localhost';
+  //raspberryIP = 192.168.0.105
+  
+  var lightReadings, tempReadings;
   
   Parse.initialize("WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL", "uRvdUCYFENssbGDeJYsQwAwyoBIIt9Smf4VobpXf");
   
@@ -29,7 +33,7 @@ $(document).ready(function()
   }(document, 'script', 'facebook-jssdk'));
   
   
-   userProfileText = sessionStorage.getItem("profile");
+   var userProfileText = sessionStorage.getItem("profile");
    // Автоматичен логин
    if(userProfileText != null)
    {
@@ -320,6 +324,8 @@ $(document).ready(function()
                 userProfile = results[0];
                 clearForm();
                 showProfile();
+                showLightTable();
+                showTempTable();
               }
               else
               {
@@ -345,7 +351,7 @@ $(document).ready(function()
      $("#profileDataAccess").text(userProfile.get("accessData")?"Потребителя има достъп до данните от устройството": "Потребителя няма достъп до данните от устройството");
      $("#profileDeviceAccess").text(userProfile.get("verified")?"Потребителя може да настройва и управлява устройството": "Потребителя няма права да настройва и управлява устройството");
   
-  /*
+  
      //Ако няма права показваме съобщение за неналични права, в противен случай показваме екран за редакция
      if(userProfile.get("verified"))
      {
@@ -357,7 +363,7 @@ $(document).ready(function()
        $("#manageContainer").addClass('hidden');
        $("#manageError").removeClass('hidden');
      }
-*/     
+    
   }
   
   // Изход на потребителя
@@ -384,19 +390,15 @@ $(document).ready(function()
     } 
   });
   
-  
   function clearForm()
   {
       $(':input').not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');
       $(':checkbox, :radio').prop('checked', false);
   }
-  
-
 
   // Екран за настройка на устройство
   $(document).on('click', '#changeDeviceSettings', function()
   {
-    
     var manageSleeptime = $('#manageSleeptime').val();
     var manageTurnAirCond = $('#manageTurnAirCond').is(":checked");
     var manageTemperature = $('#manageTemperature').val();
@@ -407,7 +409,7 @@ $(document).ready(function()
     $.ajax({
     type: "POST",
     dataType: "json",
-    url:  "http://192.168.0.105/automa/EmbeddedControllers/pot_once/ManualOverride/manualoverwrite.php",
+    url:  "http://"+raspberryIP+"/automa/EmbeddedControllers/pot_once/ManualOverride/manualoverwrite.php",
     
     data: { user: userProfile.id, 
             sleeptime: manageSleeptime,
@@ -416,11 +418,124 @@ $(document).ready(function()
             lightlevel: manageLightLevel,
             temperature: manageTemperature  }
 
-    });
-
-    
-    
-          
+    })
+    .always(function(data) {
+      if(data == 1)
+      {
+        if(!alert('Нещо се обърка...\nНямате права да направите тази промяна!\nЩе презаредим страницата!')){window.location.reload();}
+      }
+      else if(data == 0)
+      {
+        console.log("Saving to settings db");
+        
+        
+          	// Creating parse object
+            var settingsTest = Parse.Object.extend("Settings");
+            var settings = new settingsTest();
+          	
+          	// Setting data
+          	settings.set("userid", userProfile.id);
+          	settings.set("sleeptime", parseInt(manageSleeptime));
+          	settings.set("lightlevel", parseInt(manageLightLevel));
+          	settings.set("turnlight", manageTurnLight);
+          	settings.set("turnaircond", manageTurnAirCond);
+          	settings.set("temperature", parseInt(manageTemperature));
+          	
+          	settings.save(null, 
+            {
+          	  success: function(settings) 
+              {
+            		alert('Настройките са обновени!');
+          	  },
+          	  error: function(settings, error) 
+              {
+            		// Execute any logic that should take place if the save fails.
+            		// error is a Parse.Error with an error code and message.
+            		alert('Настройките са обновени, но не са запазени в parse.com със следната грешка:\n ' + error.message);
+          	  }
+          	});
+      }
+    });     
   });
+
+
+  // Таблица със отчитания на светлината (графика TODO)
+  function showLightTable()
+  {
+    
+    var lightReadingsParse = Parse.Object.extend("LightReadings");
+    var query = new Parse.Query(lightReadingsParse);
+    query.find({
+        success: function(results) 
+        {
+            if(results.length > 0)
+            {
+              lightReadings = results;
+              
+               $("#lightTable").text('');
+              
+               var htmlLightTable = "<table class='data_table'>";
+               htmlLightTable += "<tr><td>Дата</td><td>Час</td><td>Стойност (в %)</td></tr>";
+               
+               for(var i = (lightReadings.length - 1); i >= 0; i--)
+               {
+                 htmlLightTable += "<tr data-id='" + lightReadings[i].id + "'>"
+                                   +  "<td>" + lightReadings[i].get("date") + "</td>"
+                                   +  "<td>" + lightReadings[i].get("time") + "</td>"
+                                   +  "<td>" + lightReadings[i].get("value") + "</td></tr>";
+               }
+               
+               htmlLightTable += "</table>";
+               $("#lightTable").append(htmlLightTable);
+              
+            }
+            else
+            {
+              alert("Настъпи неочаквана грешка :(");
+            }
+        }
+    });  
+  }
+  
+  
+  
+  // Таблица със отчитания на светлината (графика TODO)
+  function showTempTable()
+  {
+    
+    var tempReadingsParse = Parse.Object.extend("TempReadings");
+    var query = new Parse.Query(tempReadingsParse);
+    query.find({
+        success: function(results) 
+        {
+            if(results.length > 0)
+            {
+              tempReadings = results;
+              
+               $("#tempTable").text('');
+              
+               var htmlTempTable = "<table class='data_table'>";
+               htmlTempTable += "<tr><td>Дата</td><td>Час</td><td>Стойност</td></tr>";
+               
+               for(var i = (tempReadings.length - 1); i >= 0; i--)
+               {
+                 htmlTempTable += "<tr data-id='" + tempReadings[i].id + "'>"
+                                   +  "<td>" + tempReadings[i].get("date") + "</td>"
+                                   +  "<td>" + tempReadings[i].get("time") + "</td>"
+                                   +  "<td>" + tempReadings[i].get("value") + "</td></tr>";
+               }
+               
+               htmlTempTable += "</table>";
+               $("#tempTable").append(htmlTempTable);
+              
+            }
+            else
+            {
+              alert("Настъпи неочаквана грешка :(");
+            }
+        }
+    });  
+  }
+  
 
 });

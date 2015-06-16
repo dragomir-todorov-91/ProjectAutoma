@@ -5,6 +5,7 @@ $(document).ready(function()
   var mainC = $('#mainContent'); 
   var userProfile;
   var allUsers;
+  var usersSettings;
   
   Parse.initialize("WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL", "uRvdUCYFENssbGDeJYsQwAwyoBIIt9Smf4VobpXf");
       
@@ -24,6 +25,7 @@ $(document).ready(function()
 			{
 				case 0: {$(this).addClass('selected-item'); showLoginScreen(); break; }
 				case 1: {$(this).addClass('selected-item'); showManageScreen(); break; }
+				case 2: {$(this).addClass('selected-item'); showSettingsScreen(); break; }
 			}
 		}
 	}
@@ -42,6 +44,11 @@ $(document).ready(function()
 		mainC.find('#manageScreen').removeClass('hidden');
   }
   
+  function showSettingsScreen()
+  {
+		mainC.find('.content').addClass('hidden');
+		mainC.find('#settingsScreen').removeClass('hidden');
+  }
 
   // Вход на потребителя
   $(document).on("submit", ".loginForm", function()
@@ -87,7 +94,8 @@ $(document).ready(function()
                   // Запаметяваме потребителя в локална променлива
                   userProfile = results[0];
                   clearForm();
-                  showManageProfile(); 
+                  showManageProfile();
+                  showSettingsTable();
                 }
               }
               else
@@ -135,7 +143,6 @@ $(document).ready(function()
   
   function showAllUsersOnManage()
   {
-     //TODO add UI elements on manage screen and tie them to an html-data element with user id
      var htmlManageTable = "<table class='manageTable'>";
      htmlManageTable += "<tr><td>Име</td><td>Email</td><td>Достъп до данните</td><td>Права за контрол</td><td>Промени</td></tr>"
      
@@ -195,6 +202,66 @@ user.save(null, {
   {
       $(':input').not(':button, :submit, :reset, :hidden, :checkbox, :radio').val('');
       $(':checkbox, :radio').prop('checked', false);
+  }
+  
+  
+  // Тук ще изкараме всички настройки на потребителте
+  function showSettingsTable()
+  {
+    
+    var settingsParse = Parse.Object.extend("Settings");
+    var query = new Parse.Query(settingsParse);
+    query.find({
+        success: function(results) 
+        {
+            if(results.length > 0)
+            {
+              usersSettings = results;
+              
+               $("#settingsTable").text('');
+              
+               var htmlSettingsTable = "<table class='data_table'>";
+               htmlSettingsTable += "<tr><td>Потребител</td><td>Време на отчитане</td><td>Праг на светлината (в %)</td><td>Пусни светлината</td><td>Пусни климатика</td><td>Температурен праг</td></tr>";
+               
+               for(var i = (usersSettings.length - 1); i >= 0; i--)
+               {
+                 htmlSettingsTable += "<tr>";
+                 var userName;
+                 for(j=0; j < allUsers.length; j++)
+                 {
+                   if(allUsers[j].id == usersSettings[i].get('userid'))
+                   {
+                     userName = allUsers[j].get('name');
+                   }
+                 }
+                 htmlSettingsTable +=  "<td>" + userName + "</td>"
+                                   +  "<td>" + usersSettings[i].get("sleeptime") + "</td>"
+                                   +  "<td>" + usersSettings[i].get("lightlevel") + "</td>";
+                                   
+                 if(usersSettings[i].get('turnlight'))
+                  htmlSettingsTable += "<td> Да </td>";
+                 else
+                  htmlSettingsTable += "<td> Не </td>";
+                 
+                 if(usersSettings[i].get('turnaircond'))
+                  htmlSettingsTable += "<td> Да </td>";
+                 else
+                  htmlSettingsTable += "<td> Не </td>";
+                  
+                  htmlSettingsTable += "<td>" + usersSettings[i].get('temperature') + "</td>";
+                  
+               }
+               
+               htmlSettingsTable += "</table>";
+               $("#settingsTable").append(htmlSettingsTable);
+              
+            }
+            else
+            {
+              alert("Настъпи неочаквана грешка :(");
+            }
+        }
+    });  
   }
   
 

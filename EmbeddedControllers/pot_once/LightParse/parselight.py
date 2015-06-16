@@ -73,5 +73,5 @@ for row in lines:
 		print (row)
 		
 
-writer = csv.writer(open('temp.csv', 'w', newline=''))
+writer = csv.writer(open('../lightMeasurements.csv', 'w', newline=''))
 writer.writerows(lines)

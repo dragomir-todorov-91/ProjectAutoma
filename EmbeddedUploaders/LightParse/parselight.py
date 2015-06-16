@@ -3,7 +3,13 @@
 
 # Приложение за периодичен запис на отчитания на светлината в cloud платформата parse.com
 import os, sys
+import json
+import csv
+import datetime
+from pprint import pprint
 from utils import printTitle, printSubTitle, printExplain, printTab, printError
+import urllib.request,urllib.error
+import sys
 
 #This is the parse.com application and api keys
 APPLICATION_ID = "WxrA9CtdMQ1kVF3sZgxtWdqDxsOhJC1bkvr5NyKL"
@@ -25,16 +31,47 @@ class LightReadings(ParseObject):
 # Тук сме създали обект LightReadings -> това ни служи за името на таблицата в която ще пишем
 Light = LightReadings()
 
-# Попълваме необходимите колони на таблицата
-# | Date | Time | Value | ?
-Light.date = '15.05.2015'
-Light.time = '12:00:03'
-Light.value = 100
+# Дефинираме функция за запис в Parse
+def saveToParse(Temp):
+    Temp.save()
+    
+# Дефинираме функция за проверка на интернет достъп
+def internet_on():
+    try:
+        response=urllib.request.urlopen('http://www.google.com',timeout=1)
+        return True
+    except urllib.error.URLError as err: pass
+    return False
+    
+# Четем файла и обхождаме данните за качване
+r = csv.reader(open('temp.csv', 'r')) # CSV файл, съдържащ отчитанията
+lines = [l for l in r]
 
-def saveToParse(Light):
-    print("Saving...")
-    Light.save()
-    print("Done!")
+# При неналичие на интернет достъп терминираме програмата
+if(internet_on()==False):
+	print(internet_on())
+	sys.exit(0)
 
-# Извикваме функцията с обекта Light
-saveToParse(Light)
+for row in lines:
+	if int(row[2])==0:
+		print (row)
+		# Тук сме създали обект LightReadings -> това ни служи за името на таблицата в която ще пишем
+		Light = LightReadings()
+		# Попълваме необходимите колони на таблицата
+		# | Date | Time | Value | ?
+		t=datetime.datetime.fromtimestamp(float(row[1]))
+		Light.date = t.strftime('%Y-%m-%d')
+		Light.time = t.strftime('%H:%M:%S')
+		# Стойност на осветеността по предварително замерена стойност:
+		# Определяме минимум и максимум осветеност (min, max)
+		# Изчисляваме коефициент: (max - min)/100
+		# Използваме коефициент по следния начин: (value-min)/коефициента
+		# резултат в проценти!
+		Light.value = ((int(row[0]) - 40)/2.6)
+		saveToParse(Light)
+		row[2] = 1
+		print (row)
+		
+
+writer = csv.writer(open('temp.csv', 'w', newline=''))
+writer.writerows(lines)

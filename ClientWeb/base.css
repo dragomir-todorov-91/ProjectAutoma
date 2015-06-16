@@ -167,6 +167,17 @@ td{
 }
 
 
+.data_table
+{
+	margin-top: 25px;
+	border: 5px solid #000;
+	width: 70%; 
+	margin-left: auto;
+	margin-right: auto;
+	
+}
+
+
 
 /* Същински профил */
 /*****************************************************************************/

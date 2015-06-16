@@ -153,40 +153,13 @@ input[type=button]:hover
 }
 
 
-
-/* Същински профил */
-/*****************************************************************************/
-.profile
+.data_table
 {
-	padding: 0;
-	width: 90%;
-}
-
-#UserProfileView
-{
-	background-image: url('../res/images/profileWoman.png');
-	background-size:cover;
-}
-
-#profile-information
-{
-	text-align:center;
-}
-
-.profileItems
-{
-	top: 30px;
-    position: relative;
-    margin:15px auto 0;
+	margin-top: 25px;
+	border: 5px solid #000;
+	width: 70%; 
+	margin-left: auto;
+	margin-right: auto;
 	
-	line-height: 40px;
-	width: 60%;
-	height: 40px;
-	
-	background-color: rgba(38, 50, 56 , 0.5);
-	border-radius: 4px;
-	
-	font-size: 16px;
-	color: #fff;
 }
-/*****************************************************************************/
+

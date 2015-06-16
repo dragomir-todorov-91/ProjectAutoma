@@ -10,14 +10,14 @@ class Sensor:
 	def writeSensor(self,fileH):
 		x = str(mcp.readAnalog(0,0))	# <2>
 		ts = str(time.time())
-		print(x+","+ts, file=fileH)
+		print(x+","+ts+","+"0",file=fileH)
 		print (x+","+ts)
 		return x
 
 	def writeTemperature(self,fileH):
         	x = str(mcp.readAnalog(0,0))    # <2>
 	        ts = str(time.time())
-        	print(x+","+ts, file=fileH)
+        	print(x+","+ts+","+"0",file=fileH)
 	        print (x+","+ts)
 		return x
 

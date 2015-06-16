@@ -20,9 +20,6 @@ class Output:
 	def close(self,pin):
 		pin=str(pin)
 		if not os.path.isfile("/sys/class/gpio/gpio"+pin+"/direction"): #
-<<<<<<< HEAD
-			self.writeFile("/sys/class/gpio/export", pin) 
-=======
+			self.writeFile("/sys/class/gpio/export", pin)
 			self.writeFile("/sys/class/gpio/export", pin) #
->>>>>>> e7d2e6e9463b163cbc7ba50a80bf70f0c55633af
 		self.writeFile("/sys/class/gpio/gpio"+pin+"/value", "0")

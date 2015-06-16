@@ -3,7 +3,7 @@ import time
 from pot_once import Sensor
 from lirc import Lirc
 from test import Output
-
+import subprocess
 output = Output()
 isAirCondOn = False
 while True:
@@ -18,8 +18,10 @@ while True:
 	sens = Sensor()
 	#light
 	lightLevel = sens.readLight()
+	subprocess.call("LightParse/parselight.py",shell=True)
 	#temp
 	temperature = sens.readTemperature()
+	subprocess.call("TempParse/parsetemp.py",shell=True)
 	#turn light on
 	if data['light'] >= lightLevel:
 		print "Light is turned on!"
@@ -44,7 +46,7 @@ while True:
 			print "testfddsgd";
 			print "Air cond is turned off!"
 			Aircond=Lirc('/etc/lirc/lircd.conf')
-        	        Aircond.send_once('philips','KEY_1')
+        	        Aircond.send_once('media','KEY_1')
 			isAirCondOn = False
     
 	time.sleep(float(data["sleeptime"]))

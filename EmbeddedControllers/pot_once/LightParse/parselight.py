@@ -8,7 +8,6 @@ import csv
 import datetime
 from pprint import pprint
 from utils import printTitle, printSubTitle, printExplain, printTab, printError
-import urllib.request,urllib.error
 import sys
 
 import urllib2

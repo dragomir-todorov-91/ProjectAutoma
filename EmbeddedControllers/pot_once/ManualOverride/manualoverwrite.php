@@ -41,8 +41,6 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
 
 		$output = curl_exec($ch);
 
-		echo curl_errno($ch) . '<br/>';
-		echo curl_error($ch) . '<br/>';
 
 		curl_close($ch);
 
@@ -51,9 +49,11 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
 		
 
 		if($object->verified == true)
+		{
 			$ret = file_put_contents('data.json',$data);
+			echo "0";}
 		else {
-			echo "No Permision To Execute Operation!";
+			echo "1";
 		}
 	}
 }

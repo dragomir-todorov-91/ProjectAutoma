@@ -522,7 +522,7 @@ $(document).ready(function()
                  htmlTempTable += "<tr data-id='" + tempReadings[i].id + "'>"
                                    +  "<td>" + tempReadings[i].get("date") + "</td>"
                                    +  "<td>" + tempReadings[i].get("time") + "</td>"
-                                   +  "<td>" + tempReadings[i].get("value") + "</td></tr>";
+                                   +  "<td>" + tempReadings[i].get("value").toFixed(2) + "</td></tr>";
                }
                
                htmlTempTable += "</table>";

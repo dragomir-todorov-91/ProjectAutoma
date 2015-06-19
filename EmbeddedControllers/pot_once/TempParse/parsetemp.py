@@ -41,7 +41,7 @@ def internet_on():
     return False
     
 # Четем файла и обхождаме данните за качване
-r = csv.reader(open('../temperatureMeasurements.csv', 'r')) # CSV файл, съдържащ отчитанията
+r = csv.reader(open(parent_dir('temperatureMeasurements.csv')+'temperatureMeasurements.csv', 'r')) # CSV файл, съдържащ отчитанията
 lines = [l for l in r]
 
 # При неналичие на интернет достъп терминираме програмата

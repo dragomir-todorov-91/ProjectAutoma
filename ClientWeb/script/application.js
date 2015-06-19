@@ -4,8 +4,8 @@ $(document).ready(function()
   var selectedItem = 0;
   var mainC = $('#mainContent'); 
   var userProfile;
-  var raspberryIP='localhost';
-  //raspberryIP = 192.168.0.105
+  //var raspberryIP='localhost';
+  var raspberryIP = "192.168.0.102";
   
   var lightReadings, tempReadings;
   
@@ -304,6 +304,9 @@ $(document).ready(function()
   	loginUser(loginUserID);
   });
   
+  
+  
+  
   // Допълнителна функция за автоматично вписване на потребителя
   function loginUser(loginUserID)
   {
@@ -326,6 +329,7 @@ $(document).ready(function()
                 showProfile();
                 showLightTable();
                 showTempTable();
+                showUpdatedSettings();
               }
               else
               {
@@ -535,6 +539,14 @@ $(document).ready(function()
             }
         }
     });  
+  }
+  
+  
+  function showUpdatedSettings()
+  {
+    // TODO
+    // Зарежда последните настройки
+    // Зарежда последните потребителски настройки и ако не съвпадат с горните се предлага да се заменят
   }
   
 

@@ -144,7 +144,7 @@ $(document).ready(function()
   function showAllUsersOnManage()
   {
      var htmlManageTable = "<table class='manageTable'>";
-     htmlManageTable += "<tr><td>Име</td><td>Email</td><td>Достъп до данните</td><td>Права за контрол</td><td>Промени</td></tr>"
+     htmlManageTable += "<tr><td>Име</td><td>Email</td><td>Достъп до данните</td><td>Права за контрол</td></tr>";
      
      for(var i = 0; i < allUsers.length; i++)
      {
@@ -158,45 +158,79 @@ $(document).ready(function()
                           if(allUsers[i].get("verified") == true)
                             htmlManageTable += "<td><input type='checkbox' name='verified' value='verified' checked='checked'>Control Access</td>";
                           else
-                            htmlManageTable += "<td><input type='checkbox' name='verified' value='verified'>Control Access</td>";
-                       +  "</tr>";
-                       htmlManageTable += "<td><input type='button' class='submitUpdatedUsers' value='Промени правата'></td>";
+                            htmlManageTable += "<td><input type='checkbox' name='verified' value='verified'>Control Access</td></tr>";
      }
      
      htmlManageTable += "</table>";
      $("#manageTable").append(htmlManageTable);
   }
   
-  $(document).on("click", ".submitUpdatedUsers", function()
-  {
-    // Извлича ID на потребителя
-    var updateUserID = $(this).closest('tr').data('id');
-    var newDataAccessValue = $(this).parent().prev('td').prev('td').find('input').is(":checked");
-    var newVerifiedValue = $(this).parent().prev('td').find('input').is(":checked");
-    
-    // Изпраща заявка на сървъра за запис
-    
-    
-    // Create a pointer to an object of class Point with id dlkj83d
-var Users = Parse.Object.extend("Users");
-var user = new Users();
-user.id = updateUserID;
-user.set('accessData',newDataAccessValue);
-user.set('verified',newVerifiedValue);
-
-user.save(null, {
-  success: function(point) {
-    // Saved successfully.
-  },
-  error: function(point, error) {
-    // The save failed.
-    // error is a Parse.Error with an error code and description.
-  }
-});
-    
-    
-    
+  
+  $(document).on("click", "input:checkbox", function()
+  {    
+   var changedUserID = $(this).closest('tr').data('id');
+   
+   // Намираме потребител и проверяваме за промяна
+   var newDataAccessValue = $(this).closest('tr').find('td:eq(2)').find('input').is(":checked");
+   var newVerifiedValue = $(this).closest('tr').find('td:eq(3)').find('input').is(":checked");
+   
+   // Правим проверка за променени стойности, ако са променени добавяме клас edited в tr
+   for(var i = 0; i < allUsers.length; i++)
+   {
+     if(allUsers[i].id == changedUserID)
+     {
+       if((allUsers[i].get('accessData') != newDataAccessValue) || (allUsers[i].get('verified') != newVerifiedValue))
+       {
+         $(this).closest('tr').addClass('edited');
+       }
+       else
+       {
+         $(this).closest('tr').removeClass('edited');
+       }
+       break;
+     }
+   }
+   
   });
+  
+  
+  
+  // Ще стане заявката за запис (обхождане на всички редове и тези маркирани за редакция се update)
+  $(document).on("click", "#editUsers", function()
+  {
+    var $trs = $('tr');
+    
+    for(var i = 0; i < $trs.length; i++)
+    {
+      if($($trs[i]).hasClass('edited'))
+      {
+        // Вземаме данните за update
+        var updateUserID = $($trs[i]).data('id');
+        var newDataAccessValue = $($trs[i]).find('td:eq(2)').find('input').is(":checked");
+        var newVerifiedValue = $($trs[i]).find('td:eq(3)').find('input').is(":checked");
+        
+        
+        // Create a pointer to an object of class Point with id dlkj83d
+        var Users = Parse.Object.extend("Users");
+        var user = new Users();
+        user.id = updateUserID;
+        user.set('accessData',newDataAccessValue);
+        user.set('verified',newVerifiedValue);
+        
+        user.save(null, {
+          success: function(point) {
+            $('tr').removeClass('edited');
+          },
+          error: function(point, error) {
+            // The save failed.
+            // error is a Parse.Error with an error code and description.
+          }
+          });
+      }
+     }
+  });
+    
+    
     
   function clearForm()
   {

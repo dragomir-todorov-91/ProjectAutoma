@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Приложение за периодичен запис на отчитания на температурата в cloud платформата parse.com
-import os, sys
+import os, sys, os.path
 import json
 import csv
 import datetime
@@ -41,7 +41,7 @@ def internet_on():
     return False
     
 # Четем файла и обхождаме данните за качване
-r = csv.reader(open('../temperatureMeasurements.csv', 'r')) # CSV файл, съдържащ отчитанията
+r = csv.reader(open(os.path.dirname(__file__)+'/../temperatureMeasurements.csv', 'r')) # CSV файл, съдържащ отчитанията
 lines = [l for l in r]
 
 # При неналичие на интернет достъп терминираме програмата
@@ -66,5 +66,5 @@ for row in lines:
 		print (row)
 		
 
-writer = csv.writer(open('../temperatureMeasurements.csv', 'w', newline=''))
+writer = csv.writer(open(os.path.dirname(__file__)+'/../temperatureMeasurements.csv', 'w'))
 writer.writerows(lines)

@@ -18,12 +18,10 @@ while True:
 	sens = Sensor()
 	#light
 	lightLevel = sens.readLight()
-	subprocess.call("LightParse/parselight.py",shell=True)
 	#temp
 	temperature = sens.readTemperature()
-	subprocess.call("TempParse/parsetemp.py",shell=True)
 	#turn light on
-	if data['light'] >= lightLevel:
+	if data['lightlevel'] >= lightLevel:
 		print "Light is turned on!"
 		output.open(18,"out")
 	else:
@@ -48,5 +46,7 @@ while True:
 			Aircond=Lirc('/etc/lirc/lircd.conf')
         	        Aircond.send_once('media','KEY_1')
 			isAirCondOn = False
-    
+    	
 	time.sleep(float(data["sleeptime"]))
+	subprocess.call("LightParse/parselight.py",shell=True)
+ 	subprocess.call("TempParse/parsetemp.py",shell=True)

@@ -41,7 +41,6 @@ def internet_on():
     return False
     
 # Четем файла и обхождаме данните за качване
-print "drago ima gre6ka!"
 r = csv.reader(open(os.path.dirname(__file__)+'/../temperatureMeasurements.csv', 'r')) # CSV файл, съдържащ отчитанията
 lines = [l for l in r]
 
@@ -67,5 +66,5 @@ for row in lines:
 		print (row)
 		
 
-writer = csv.writer(open('../temperatureMeasurements.csv', 'w', newline=''))
+writer = csv.writer(open('../temperatureMeasurements.csv', 'w'))
 writer.writerows(lines)

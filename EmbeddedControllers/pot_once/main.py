@@ -11,9 +11,9 @@ while True:
 		data = json.load(data_file)
 	
 	if data['turnlight']=="1":
-		print "Light turned on"
+		print "Light turned on manually"
 	if data['turnaircond']=="1":
-                print "Aircond turned on"
+                print "Aircond turned on manually"
 	#call the sensor readings
 	sens = Sensor()
 	#light
@@ -35,7 +35,7 @@ while True:
             	if not isAirCondOn:
 			print "Air cond is turned on!"
 			Aircond=Lirc('/etc/lirc/lircd.conf')
-			Aircond.send_once('philips','KEY_1')
+			Aircond.send_once('media','KEY_1')
 			isAirCondOn = True
 
 	if ((temperature > (ctemperature-ctemperature*5/100.0)) and (temperature < (ctemperature+ctemperature*5/100.0))):

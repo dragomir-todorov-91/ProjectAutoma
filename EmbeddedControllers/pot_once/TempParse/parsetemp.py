@@ -41,6 +41,7 @@ def internet_on():
     return False
     
 # Четем файла и обхождаме данните за качване
+print "drago ima gre6ka!"
 r = csv.reader(open(parent_dir('temperatureMeasurements.csv')+'temperatureMeasurements.csv', 'r')) # CSV файл, съдържащ отчитанията
 lines = [l for l in r]
 

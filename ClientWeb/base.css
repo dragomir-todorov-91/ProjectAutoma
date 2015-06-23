@@ -89,21 +89,17 @@ header
 	position: relative;
 	margin-left: auto;
 	margin-right: auto;
-	background-color: #005500;
+	background-color: #1c94c4;
 	line-height: 3;
 	border-radius: 50px;
 	color: #fff;
 	width: 200px;
 	height: 48px;
 	cursor: pointer;
+	outline:none
 }
 
-.facebook
-{
-	background-color:#3b5998;
-}
-
-.button:active,#registerButtonFacebook:active
+.button:active
 {
 	background-color:#667278;
 }
@@ -114,10 +110,6 @@ header
 	background-color:#b0bec5;
 }
 
-.secondaryHeaderBack
-{
-	background-color: #005500;
-}
 
 .formfield
 {

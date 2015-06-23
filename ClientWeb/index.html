@@ -5,6 +5,9 @@
     <link rel="stylesheet" href="base.css" />
     <script preload src="script/jquery-2.1.1.min.js" type="text/javascript"></script>
     <script preload src="script/jquery.color-2.1.2.min.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="script/jquery-ui.css">
+  	<script src="script/jquery-ui.js"></script>
+
 	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.4.2.min.js"></script>
     <script src="http://connect.facebook.net/en_US/all.js"></script>
 	
@@ -62,13 +65,15 @@
 		</div>		
 
 		<!--Контейнер за свързване към услугата, получава списък от хранилища -->
-		<div id="deviceScreen" class="hidden content">
+		<div id="deviceScreen" class="hidden content">				  
 			<div id="manageError"> Съжаляваме, но нямате наличните права за да променяте настройки на устройството !!!</div>
 			<div  id="manageContainer">
 				<table class="manageTable">
 					<tr>
 						<td>Време на отчитане:</td>
-						<td><input id="manageSleeptime" type="number" value="300" min="60" max="3600"> секунди</td>
+						<td><input type="button" value="Настрой" id='setupSleeptime'></div><input id="manageSleeptime" type="number" value="300" min="60" max="3600"> секунди </td>
+				        </div>
+        
 					</tr>
 					<tr>
 						<td>Включи климатика (пренебрегва долната стойност):</td>
@@ -83,12 +88,14 @@
 						<td><input id="manageTurnLight" type="checkbox"></td>
 					</tr>
 					<tr>
-						<td>Температура, която да подържа климатика:</td>
-						<td><input id="manageLightLevel" type="number" value="300" min="60" max="3600"> лумени</td>
+						<td>Праг на осветление:</td>
+						<td><input id="manageLightLevel" type="number" value="300" min="60" max="3600"> %</td>
 					</tr>
 				</table>
+							<div class="bshdhasd" id='updatedSettings'> Настройките са променени. <input type="button" value="Върнете последните!" id="resetUserSettings"><input id="cancelMessage" type="button" value="X"></div>
 				<input class='button' type="submit" id="changeDeviceSettings" value="Промени">
 			</div>
+
 		</div>				
 		
 	</div>
@@ -101,6 +108,14 @@
       <div class="logged hidden navigation-items">Осветление</div>
       <div class="logged hidden navigation-items">Устройство</div>
     </header>
+	
+	
+	<div id='dialog-form'>
+		Дни: <input type="number" value='0' min="0" max="31" id="time-picker-days"> <br>
+		Часове: <input type="number" value='1' min="0" max="23"  id="time-picker-hours"><br>
+		Минути:<input type="number" value='0' min="0" max="59" id="time-picker-minutes"><br>
+		Секунди: <input type="number" value='0' min="0" max="59" id="time-picker-seconds"><br>
+	</div>
 	
   </body>
 </html>

@@ -1,9 +1,13 @@
+
+var lastSettings, lastUserSettings;
+  
 $(document).ready(function()
 {  
   // Глобални променливи
   var selectedItem = 0;
   var mainC = $('#mainContent'); 
   var userProfile;
+  var secondsValue, minutesValue, hoursValue, daysValue;
   //var raspberryIP='localhost';
   var raspberryIP = "192.168.0.102";
   
@@ -463,12 +467,76 @@ $(document).ready(function()
   });
 
 
+  // Спомагателни функции за настройка на периода на отчитане
+  var dialog = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 300,
+      width: 500,
+      title: "Период на отчитане:",
+      modal: true,
+      buttons: {
+        "Запази": updateTimeField,
+        "Върни предишните": resetCurrentDialog,
+        "Откажи": function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        console.log('Time not changed!');
+      }
+    });
+ 
+    $(document).on('click', '#setupSleeptime', function() {
+      
+      // Update fields based on value
+      
+      var manageSleeptime = parseInt($('#manageSleeptime').val());
+      
+      secondsValue = manageSleeptime;
+      daysValue = Math.floor(secondsValue / 86400);
+      
+      secondsValue = secondsValue - (daysValue * 86400);
+      hoursValue = Math.floor(secondsValue / 3600);
+    
+      secondsValue = secondsValue - (hoursValue * 3600);
+      minutesValue = Math.floor(secondsValue / 60);
+      
+      secondsValue = secondsValue % 60;
+      
+      $("#time-picker-seconds").val(secondsValue);
+      $("#time-picker-minutes").val(minutesValue);
+      $("#time-picker-hours").val(hoursValue);
+      $("#time-picker-days").val(daysValue);
+      
+      dialog.dialog( "open" );
+    });
+    
+    function updateTimeField()
+    {
+      var newSleeptime = parseInt($("#time-picker-seconds").val()) + parseInt($("#time-picker-minutes").val())*60 + 
+                          parseInt($("#time-picker-hours").val())*3600 + parseInt($("#time-picker-days").val())*86400;
+      $('#manageSleeptime').val(newSleeptime);
+      
+      dialog.dialog( "close" );
+    }
+    
+    function resetCurrentDialog()
+    {
+      $("#time-picker-seconds").val(secondsValue);
+      $("#time-picker-minutes").val(minutesValue);
+      $("#time-picker-hours").val(hoursValue);
+      $("#time-picker-days").val(daysValue);
+    }
+
+
   // Таблица със отчитания на светлината (графика TODO)
   function showLightTable()
   {
     
     var lightReadingsParse = Parse.Object.extend("LightReadings");
     var query = new Parse.Query(lightReadingsParse);
+    query.ascending("date");
+    query.limit(1000);
     query.find({
         success: function(results) 
         {
@@ -509,6 +577,8 @@ $(document).ready(function()
     
     var tempReadingsParse = Parse.Object.extend("TempReadings");
     var query = new Parse.Query(tempReadingsParse);
+    query.ascending("date");
+    query.limit(1000);
     query.find({
         success: function(results) 
         {
@@ -547,7 +617,81 @@ $(document).ready(function()
     // TODO
     // Зарежда последните настройки
     // Зарежда последните потребителски настройки и ако не съвпадат с горните се предлага да се заменят
+    
+    
+    var settingsParse = Parse.Object.extend("Settings");
+    var query = new Parse.Query(settingsParse);
+    query.equalTo("userid", userProfile.id);
+    query.ascending("createdAt");
+    query.limit(1);
+    query.find({
+        success: function(results) 
+        {
+          lastUserSettings = results[0];
+          showChangedSettings();
+        }
+    });  
+    
+    
+    var settingsParse = Parse.Object.extend("Settings");
+    var query = new Parse.Query(settingsParse);
+    query.descending("createdAt");
+    query.limit(1);
+    query.find({
+        success: function(results) 
+        {
+          lastSettings = results[0];
+          setSettings(lastSettings);
+          showChangedSettings();
+          
+        }
+    });  
   }
   
-
 });
+
+
+function showChangedSettings()
+{
+          if((lastUserSettings != null) && (lastSettings != null) && (lastUserSettings.get('userid') != lastSettings.get('userid')) )
+          {
+            $("#updatedSettings").removeClass('hidden');
+          }
+          
+}
+
+function setSettings(settings)
+{
+  
+          $('#manageSleeptime').val( settings.get("sleeptime"));
+          
+          settings.get('turnlight')? $('#manageTurnLight').prop('checked', true) : $('#manageTurnLight').prop('checked', false);
+
+          $('#manageTemperature').val(settings.get('temperature'));
+          
+          settings.get('turnaircond')? $('#manageTurnAirCond').prop('checked', true) : $('#manageTurnAirCond').prop('checked', false);
+          
+          $('#manageLightLevel').val(settings.get('lightlevel'));
+}
+
+$(document).on("click", "#resetUserSettings", function()
+  {
+    setSettings(lastUserSettings);
+    $("#updatedSettings").addClass('hidden');
+  });
+  
+function showChangedSettings()
+{
+          if((lastUserSettings != null) && (lastSettings != null) && (lastUserSettings.get('userid') != lastSettings.get('userid')) )
+          {
+            $("#updatedSettings").removeClass('hidden');
+          }
+          
+}
+
+
+$(document).on("click", "#cancelMessage", function()
+  {
+    $("#updatedSettings").addClass('hidden');
+  });
+  

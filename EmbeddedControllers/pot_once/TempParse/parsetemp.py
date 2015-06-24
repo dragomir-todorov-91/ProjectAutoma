@@ -66,5 +66,5 @@ for row in lines:
 		print (row)
 		
 
-writer = csv.writer(open('../temperatureMeasurements.csv', 'w'))
+writer = csv.writer(open(os.path.dirname(__file__)+'/../temperatureMeasurements.csv', 'w'))
 writer.writerows(lines)

@@ -5,7 +5,7 @@ class Output:
 	def writeFile(self, filename, contents): 
 		with open(filename, 'w') as f: 
 			f.write(contents) 
-
+ 		
 
 	def open(self, pin, direction):
 		pin = str(pin)

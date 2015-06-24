@@ -1,6 +1,6 @@
 
 var lastSettings, lastUserSettings;
-  
+
 $(document).ready(function()
 {  
   // Глобални променливи
@@ -44,6 +44,7 @@ $(document).ready(function()
      userProfile = JSON.parse(userProfileText);
      // Имаме логнат потребител
       alert("Loging in");
+     $('#seconds').removeClass('hidden');
       loginUser(userProfile.userid);
    }
   
@@ -331,8 +332,8 @@ $(document).ready(function()
                 userProfile = results[0];
                 clearForm();
                 showProfile();
-                showLightTable();
-                showTempTable();
+                showLightTable(10);
+                showTempTable(10);
                 showUpdatedSettings();
               }
               else
@@ -529,86 +530,207 @@ $(document).ready(function()
     }
 
 
+  
+  
+  $( "#tempNumberValues" ).change(function() {
+    showTempTable($( "select#tempNumberValues option:selected" ).val());
+  });
+  
+  
+  
+  $( "#lightNumberValues" ).change(function() {
+    showLightTable($( "select#lightNumberValues option:selected" ).val());
+  });
+  
+  
   // Таблица със отчитания на светлината (графика TODO)
-  function showLightTable()
+  function showLightTable(lightNumber)
   {
-    
-    var lightReadingsParse = Parse.Object.extend("LightReadings");
-    var query = new Parse.Query(lightReadingsParse);
-    query.ascending("date");
-    query.limit(1000);
-    query.find({
-        success: function(results) 
-        {
-            if(results.length > 0)
-            {
-              lightReadings = results;
-              
-               $("#lightTable").text('');
-              
-               var htmlLightTable = "<table class='data_table'>";
-               htmlLightTable += "<tr><td>Дата</td><td>Час</td><td>Стойност (в %)</td></tr>";
-               
-               for(var i = (lightReadings.length - 1); i >= 0; i--)
-               {
-                 htmlLightTable += "<tr data-id='" + lightReadings[i].id + "'>"
-                                   +  "<td>" + lightReadings[i].get("date") + "</td>"
-                                   +  "<td>" + lightReadings[i].get("time") + "</td>"
-                                   +  "<td>" + lightReadings[i].get("value") + "</td></tr>";
-               }
-               
-               htmlLightTable += "</table>";
-               $("#lightTable").append(htmlLightTable);
-              
-            }
-            else
-            {
-              alert("Настъпи неочаквана грешка :(");
-            }
-        }
-    });  
+    if(userProfile.get('accessData') == true)
+    {
+      var lightReadingsParse = Parse.Object.extend("LightReadings");
+      var query = new Parse.Query(lightReadingsParse);
+      query.descending("date");
+      query.limit(lightNumber);
+      query.find({
+          success: function(results) 
+          {
+              if(results.length > 0)
+              {
+                lightReadings = results;
+                
+                 $("#lightTable").text('');
+                
+                 var htmlLightTable = "Октрити са: "+ lightReadings.length + " записа<br><table class='data_table highchart' data-graph-container-before='1' data-graph-type='column'>";
+                 htmlLightTable += "<tr><td>№</td><td>Дата</td><td>Час</td><td>Стойност (в %)</td></tr>";
+                 
+                 var data = [];
+                 var categories = [];
+                 
+                 for(var i = 0; i < lightReadings.length; i++)
+                 {
+                   data.push(parseFloat(lightReadings[i].get("value").toFixed(2)));
+                   categories.push(i+1);
+                   
+                   htmlLightTable += "<tr data-id='" + lightReadings[i].id + "'>"
+                                     +  "<td>" + (i+1) + "</td>"
+                                     +  "<td>" + lightReadings[i].get("date") + "</td>"
+                                     +  "<td>" + lightReadings[i].get("time") + "</td>"
+                                     +  "<td>" + lightReadings[i].get("value") + "</td></tr>";
+                 }
+                 
+                 htmlLightTable += "</table>";
+                 $("#lightTable").append(htmlLightTable);
+                
+                
+                 // Chart showing
+                 $('#containerLight').highcharts({
+                 title: {
+                    text: 'Осветеност в периода на заредените стойности',
+                    x: -20 //center
+                 },
+                 subtitle: {
+                    text: 'Източник: Raspberry Pi',
+                    x: -20
+                 },
+                 xAxis: {
+                    categories: categories
+                 },
+                 yAxis: {
+                    title: {
+                        text: 'Осветеност (%)'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                 },
+                 tooltip: {
+                    valueSuffix: '%'
+                 },
+                 legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                 },
+                 series: [
+                  {
+                    name: 'Стая',
+                    data: data
+                 }]
+                 });
+                
+              }
+              else
+              {
+                alert("Настъпи неочаквана грешка :(");
+              }
+          }
+      });
+    }  
+    else
+    {
+      $("#lightTable").text('Потребителя няма права да вижда стойностите за осветеността');
+      $(" select").addClass('hidden');
+      $("div#containerLight").addClass('hidden');
+    }
   }
   
   
   
   // Таблица със отчитания на светлината (графика TODO)
-  function showTempTable()
+  function showTempTable(tempNumber)
   {
-    
-    var tempReadingsParse = Parse.Object.extend("TempReadings");
-    var query = new Parse.Query(tempReadingsParse);
-    query.ascending("date");
-    query.limit(1000);
-    query.find({
-        success: function(results) 
-        {
-            if(results.length > 0)
-            {
-              tempReadings = results;
-              
-               $("#tempTable").text('');
-              
-               var htmlTempTable = "<table class='data_table'>";
-               htmlTempTable += "<tr><td>Дата</td><td>Час</td><td>Стойност</td></tr>";
-               
-               for(var i = (tempReadings.length - 1); i >= 0; i--)
-               {
-                 htmlTempTable += "<tr data-id='" + tempReadings[i].id + "'>"
-                                   +  "<td>" + tempReadings[i].get("date") + "</td>"
-                                   +  "<td>" + tempReadings[i].get("time") + "</td>"
-                                   +  "<td>" + tempReadings[i].get("value").toFixed(2) + "</td></tr>";
-               }
-               
-               htmlTempTable += "</table>";
-               $("#tempTable").append(htmlTempTable);
-              
-            }
-            else
-            {
-              alert("Настъпи неочаквана грешка :(");
-            }
-        }
-    });  
+    if(userProfile.get('accessData') == true)
+    {
+      var tempReadingsParse = Parse.Object.extend("TempReadings");
+      var query = new Parse.Query(tempReadingsParse);
+      query.descending("date");
+      query.limit(tempNumber);
+      query.find({
+          success: function(results) 
+          {
+              if(results.length > 0)
+              {
+                tempReadings = results;
+                
+                 $("#tempTable").text('');
+                
+                 var htmlTempTable = "Октрити са: "+ tempReadings.length + " записа<br><table class='data_table  class='data_table highchart2' data-graph-container-before='1' data-graph-type='column>";
+                 htmlTempTable += "<tr><td>№</td><td>Дата</td><td>Час</td><td>Стойност</td></tr>";
+                 
+                 var data = [];
+                 var categories = [];
+                 
+                 for(var i = 0; i < tempReadings.length; i++)
+                 {
+                   data.push(parseFloat(tempReadings[i].get("value").toFixed(2)));
+                   categories.push(i+1);
+                   
+                   htmlTempTable += "<tr data-id='" + tempReadings[i].id + "'>"
+                                     +  "<td>" + (i+1) + "</td>"
+                                     +  "<td>" + tempReadings[i].get("date") + "</td>"
+                                     +  "<td>" + tempReadings[i].get("time") + "</td>"
+                                     +  "<td>" + tempReadings[i].get("value").toFixed(2) + "</td></tr>";
+                 }
+                 
+                 htmlTempTable += "</table>";
+                 $("#tempTable").append(htmlTempTable);
+                 
+                 // Chart showing
+                 $('#containerTemp').highcharts({
+                 title: {
+                    text: 'Температури в периода на заредените стойности',
+                    x: -20 //center
+                 },
+                 subtitle: {
+                    text: 'Източник: Raspberry Pi',
+                    x: -20
+                 },
+                 xAxis: {
+                    categories: categories
+                 },
+                 yAxis: {
+                    title: {
+                        text: 'Temperature (°C)'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                 },
+                 tooltip: {
+                    valueSuffix: '°C'
+                 },
+                 legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                 },
+                 series: [
+                  {
+                    name: 'Стая',
+                    data: data
+                 }]
+                 });
+              }
+              else
+              {
+                alert("Настъпи неочаквана грешка :(");
+              }
+          }
+      });  
+    }
+    else
+    {
+      $("#tempTable").text('Потребителя няма права да вижда стойностите за температурата');
+      $("select").addClass('hidden');
+      $("div#containerTemp").addClass('hidden');
+    }
   }
   
   

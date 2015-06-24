@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(~0);
 if($_SERVER['REQUEST_METHOD'] == "POST")
 {
 	// Get data
@@ -22,10 +24,10 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
 			$conf->temperature=$_POST['temperature'];}
 		if(isset($_POST['lightlevel'])){
 			$conf->lightlevel=$_POST['lightlevel'];}
-		
+echo "test"		;
 		
 		$data = json_encode($conf);
-
+echo $data;
 		
 
 		$ch = curl_init('https://api.parse.com/1/classes/Users/'.($conf->userid));
@@ -50,7 +52,11 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
 
 		if($object->verified == true)
 		{
-			$ret = file_put_contents('data.json',$data);
+			$fh = fopen('data.json',"w+");
+			fwrite($fh,$data);
+//			fclose($fh);
+//			$ret = file_put_contents('data.json',$data);
+//			var_dump($ret);
 			echo "0";}
 		else {
 			echo "1";

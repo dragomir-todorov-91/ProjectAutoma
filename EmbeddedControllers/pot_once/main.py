@@ -35,7 +35,7 @@ while True:
             	if not isAirCondOn:
 			print "Air cond is turned on!"
 			Aircond=Lirc('/etc/lirc/lircd.conf')
-			Aircond.send_once('media','KEY_1')
+			Aircond.send_once('topfield','KEY_1')
 			isAirCondOn = True
 
 	if ((temperature > (ctemperature-ctemperature*5/100.0)) and (temperature < (ctemperature+ctemperature*5/100.0))):
@@ -44,7 +44,7 @@ while True:
 			print "testfddsgd";
 			print "Air cond is turned off!"
 			Aircond=Lirc('/etc/lirc/lircd.conf')
-        	        Aircond.send_once('media','KEY_1')
+        	        Aircond.send_once('topfield','KEY_1')
 			isAirCondOn = False
     	
 	time.sleep(float(data["sleeptime"]))

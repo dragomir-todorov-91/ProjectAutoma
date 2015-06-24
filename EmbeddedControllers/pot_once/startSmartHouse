@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd /
+cd /var/www/automa/EmbeddedControllers/pot_once/
+sudo python main.py
+cd /

@@ -9,7 +9,7 @@ $(document).ready(function()
   var userProfile;
   var secondsValue, minutesValue, hoursValue, daysValue;
   //var raspberryIP='localhost';
-  var raspberryIP = "192.168.0.102";
+  var raspberryIP = "192.168.0.106";
   
   var lightReadings, tempReadings;
   
@@ -409,62 +409,77 @@ $(document).ready(function()
   $(document).on('click', '#changeDeviceSettings', function()
   {
     var manageSleeptime = $('#manageSleeptime').val();
-    var manageTurnAirCond = $('#manageTurnAirCond').is(":checked");
+    var manageTurnAirCond = ($('#manageTurnAirCond').is(":checked"))?0:1;
     var manageTemperature = $('#manageTemperature').val();
-    var manageTurnLight = $('#manageTurnLight').is(":checked");
+    var manageTurnLight = $('#manageTurnLight').is(":checked")?0:1;
     var manageLightLevel = $('#manageLightLevel').val();
     
-    
-    $.ajax({
-    type: "POST",
-    dataType: "json",
-    url:  "http://"+raspberryIP+"/automa/EmbeddedControllers/pot_once/ManualOverride/manualoverwrite.php",
-    
-    data: { user: userProfile.id, 
-            sleeptime: manageSleeptime,
-            turnaircond: manageTurnAirCond,
-            turnlight: manageTurnLight,
-            lightlevel: manageLightLevel,
-            temperature: manageTemperature  }
-
-    })
-    .always(function(data) {
-      if(data == 1)
-      {
-        if(!alert('Нещо се обърка...\nНямате права да направите тази промяна!\nЩе презаредим страницата!')){window.location.reload();}
-      }
-      else if(data == 0)
-      {
-        console.log("Saving to settings db");
+    if(manageSleeptime != "" && manageTemperature != "" && manageLightLevel != "")
+    {
+        $.ajax({
+        type: "POST",
+        dataType: "json",
+        url:  "http://"+raspberryIP+"/automa/EmbeddedControllers/pot_once/ManualOverride/manualoverwrite.php",
         
-        
-          	// Creating parse object
-            var settingsTest = Parse.Object.extend("Settings");
-            var settings = new settingsTest();
-          	
-          	// Setting data
-          	settings.set("userid", userProfile.id);
-          	settings.set("sleeptime", parseInt(manageSleeptime));
-          	settings.set("lightlevel", parseInt(manageLightLevel));
-          	settings.set("turnlight", manageTurnLight);
-          	settings.set("turnaircond", manageTurnAirCond);
-          	settings.set("temperature", parseInt(manageTemperature));
-          	
-          	settings.save(null, 
-            {
-          	  success: function(settings) 
-              {
-            		alert('Настройките са обновени!');
-          	  },
-          	  error: function(settings, error) 
-              {
-            		// Execute any logic that should take place if the save fails.
-            		// error is a Parse.Error with an error code and message.
-            		alert('Настройките са обновени, но не са запазени в parse.com със следната грешка:\n ' + error.message);
-          	  }
-          	});
-      }
-    });     
+        data: { user: userProfile.id, 
+                sleeptime: manageSleeptime,
+                turnaircond: manageTurnAirCond,
+                turnlight: manageTurnLight,
+                lightlevel: manageLightLevel,
+                temperature: manageTemperature  }
+    
+        })
+        .always(function(data) {
+          if(data == 1)
+          {
+            if(!alert('Нещо се обърка...\nНямате права да направите тази промяна!\nЩе презаредим страницата!')){window.location.reload();}
+          }
+          else if(data == 0)
+          {
+            console.log("Saving to settings db");
+            
+            
+              	// Creating parse object
+                var settingsTest = Parse.Object.extend("Settings");
+                var settings = new settingsTest();
+              	
+                var manageTurnAirCondParse, manageTurnLightParse;
+                if(manageTurnAirCond == 0)
+                  manageTurnAirCondParse = true;
+                else manageTurnAirCondParse = false;
+                if(manageTurnLight == 0)
+                  manageTurnLightParse = true;
+                else manageTurnLightParse = false;
+                
+              	// Setting data
+              	settings.set("userid", userProfile.id);
+              	settings.set("sleeptime", parseInt(manageSleeptime));
+              	settings.set("lightlevel", parseInt(manageLightLevel));
+              	settings.set("turnlight", manageTurnLightParse);
+              	settings.set("turnaircond", manageTurnAirCondParse);
+              	settings.set("temperature", parseInt(manageTemperature));
+              	
+              	settings.save(null, 
+                {
+              	  success: function(settings) 
+                  {
+                		alert('Настройките са обновени!');
+              	  },
+              	  error: function(settings, error) 
+                  {
+                		// Execute any logic that should take place if the save fails.
+                		// error is a Parse.Error with an error code and message.
+                		alert('Настройките са обновени, но не са запазени в parse.com със следната грешка:\n ' + error.message);
+              	  }
+              	});
+          }
+        });           
+    }
+    else
+    {
+      alert('Моля въведете всички стойности!');
+    }
+    
   });
 
 
@@ -550,7 +565,7 @@ $(document).ready(function()
     {
       var lightReadingsParse = Parse.Object.extend("LightReadings");
       var query = new Parse.Query(lightReadingsParse);
-      query.descending("date");
+      query.descending("date,time");
       query.limit(lightNumber);
       query.find({
           success: function(results) 
@@ -569,11 +584,11 @@ $(document).ready(function()
                  
                  for(var i = 0; i < lightReadings.length; i++)
                  {
-                   data.push(parseFloat(lightReadings[i].get("value").toFixed(2)));
+                   data.push(parseFloat(lightReadings[lightReadings.length-i-1].get("value").toFixed(2)));
                    categories.push(i+1);
                    
                    htmlLightTable += "<tr data-id='" + lightReadings[i].id + "'>"
-                                     +  "<td>" + (i+1) + "</td>"
+                                     +  "<td>" + (lightReadings.length-i) + "</td>"
                                      +  "<td>" + lightReadings[i].get("date") + "</td>"
                                      +  "<td>" + lightReadings[i].get("time") + "</td>"
                                      +  "<td>" + lightReadings[i].get("value") + "</td></tr>";
@@ -647,7 +662,7 @@ $(document).ready(function()
     {
       var tempReadingsParse = Parse.Object.extend("TempReadings");
       var query = new Parse.Query(tempReadingsParse);
-      query.descending("date");
+      query.descending("date,time");
       query.limit(tempNumber);
       query.find({
           success: function(results) 
@@ -665,12 +680,13 @@ $(document).ready(function()
                  var categories = [];
                  
                  for(var i = 0; i < tempReadings.length; i++)
-                 {
-                   data.push(parseFloat(tempReadings[i].get("value").toFixed(2)));
+                 {               
+                   
+                   data.push(parseFloat(tempReadings[tempReadings.length-i-1].get("value").toFixed(2)));
                    categories.push(i+1);
                    
                    htmlTempTable += "<tr data-id='" + tempReadings[i].id + "'>"
-                                     +  "<td>" + (i+1) + "</td>"
+                                     +  "<td>" + (tempReadings.length-i) + "</td>"
                                      +  "<td>" + tempReadings[i].get("date") + "</td>"
                                      +  "<td>" + tempReadings[i].get("time") + "</td>"
                                      +  "<td>" + tempReadings[i].get("value").toFixed(2) + "</td></tr>";

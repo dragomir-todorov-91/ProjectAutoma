@@ -245,6 +245,7 @@ $(document).ready(function()
     
     var settingsParse = Parse.Object.extend("Settings");
     var query = new Parse.Query(settingsParse);
+    query.ascending("createdAt");
     query.find({
         success: function(results) 
         {

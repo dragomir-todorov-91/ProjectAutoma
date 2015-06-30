@@ -19,7 +19,8 @@ class Output:
 		
 	def close(self,pin):
 		pin=str(pin)
-		if not os.path.isfile("/sys/class/gpio/gpio"+pin+"/direction"): #
+		if not os.path.isfile("/sys/class/gpio/gpio"+pin+"/value"): 
 			self.writeFile("/sys/class/gpio/export", pin)
-			self.writeFile("/sys/class/gpio/export", pin) #
-		self.writeFile("/sys/class/gpio/gpio"+pin+"/value", "0")
+		#self.writeFile("/sys/class/gpio/gpio"+pin+"/value", "0")
+		if   os.path.isfile("/sys/class/gpio/gpio"+pin+"/direction"):
+			self.writeFile("/sys/class/gpio/gpio"+pin+"/value", "0")

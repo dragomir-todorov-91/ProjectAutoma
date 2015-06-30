@@ -24,10 +24,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
 			$conf->temperature=$_POST['temperature'];}
 		if(isset($_POST['lightlevel'])){
 			$conf->lightlevel=$_POST['lightlevel'];}
-echo "test"		;
 		
 		$data = json_encode($conf);
-echo $data;
 		
 
 		$ch = curl_init('https://api.parse.com/1/classes/Users/'.($conf->userid));
@@ -57,8 +55,10 @@ echo $data;
 //			fclose($fh);
 //			$ret = file_put_contents('data.json',$data);
 //			var_dump($ret);
+			header('Access-Control-Allow-Origin: *');
 			echo "0";}
 		else {
+			header('Access-Control-Allow-Origin: *');
 			echo "1";
 		}
 	}
